@@ -243,6 +243,21 @@ the IRQ resources provided via ``_CRS`` rather than providing an absolute
 IRQ number. This avoids duplication between the Properties and ``_CRS``,
 making it easier to change the resources of a Device in one place.
 
+#### Property Naming
+
+While the Key for a Property may be any String, there is the possibility
+of name collision.  For example, two vendors could use the String
+``"interrupts"`` as a Key.  The problem is that each vendor may have
+very different use cases for the Value.  One use case could be a
+Boolean value (``"yes"`` means interrupts are supported, ``"no"`` means
+the device must be polled).  A second use case could be a list
+of valid IRQs for the device (``Package() {1, 2, 3}``).
+
+It is highly recommended that each vendor prefix their Key name with
+their registered PNP or ACPI vendor ID in order to avoid name collisions.
+For example, use ``abcd-interrupts`` instead of ``interrupts``, especially
+if the word is known to be in common use in the kernel.
+
 #### Examples
 
 ##### Example Valid Property Representations
