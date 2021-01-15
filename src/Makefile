@@ -24,6 +24,12 @@ $(DSD_GUIDE).html: $(DSD_GUIDE).adoc
 $(DSD_GUIDE).adoc: $(PARTS)
 	touch $@
 
+install: all
+	cp $(DSD_GUIDE).xml ..
+	cp $(DSD_GUIDE).md ..
+	cp $(DSD_GUIDE).pdf ..
+	cp $(DSD_GUIDE).html ..
+
 clean:
 	rm -f $(DSD_GUIDE).xml
 	rm -f $(DSD_GUIDE).md
