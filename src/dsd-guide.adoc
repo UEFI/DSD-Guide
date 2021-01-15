@@ -14,15 +14,14 @@
 // table of contents
 toc::[]
 
-// Introduction
 ## Introduction
 
-This is the ACPI _DSD Implementation Guide.  This guide and associated
+This is the ACPI _DSD Implementation Guide.  This guide and its associated
 documents provide recommendations on the use of the _DSD (Device Specific
-Data) method as defined in the ACPI Specification.  The _DSD method is a
-device specific configuration object, intended for firmware and software
-engineers implementing _DSD or designing software that will use information
-supplied by the method.
+Data) object as defined in the ACPI Specification <<ACPI>>.  The _DSD
+object is a device specific configuration object, intended for firmware
+and software engineers implementing _DSD or designing software that will
+use information supplied by the object.
 
 The _DSD, as defined by the ACPI Specification, returns a Package, the
 first and every odd element of which is a Universal Unique Identifier
@@ -32,29 +31,37 @@ immediately following it. The well-known UUIDs to use in the _DSD
 output and the Data Structure formats associated with them are also
 specified in this document.
  
-// document copyright and licensing information
 ### Copyright and License Information
 
-The _DSD Implementation Guide is
-(C) 2021, UEFI Forum ASWG <aswg@uefi.org>.
+The _DSD Implementation Guide is (C) 2021, Unified Extensible Firmware
+Interface (UEFI) Forum, Inc.  More specifically, content is under the
+purview of the ACPI Specification Working Group (ASWG) <aswg@uefi.org>.
 
 The _DSD Implementation Guide is licensed under the Creative Commons
 Attribution 4.0 International License (CC-BY 4.0).  The full license
 text is available at https://creativecommons.org/licenses/by/4.0/.
 
-// changelog for the document
 ### Change Log
 
 * Version 2.0
 ** Initial conversion to asciidoc from original v1.2.
+** General text rewrites and reformatting.
+** Expand the Terms section.
+** Add a licensing section.
+** Add a bibliography and references section.
 ** Add in process and naming recommendations.
 
-// define terms
 ### Terms
 
-The following terms are used in this document:
+The key words *MUST*, *MUST NOT*, *REQUIRED*, *SHALL*, *SHALL
+NOT*, *SHOULD*, *SHOULD NOT*, *RECOMMENDED*,  *MAY*, and
+*OPTIONAL* in this document are to be interpreted as described in
+IETF <<RFC2119>>.
+
+The following additional terms are used in this document:
 
 ACPI:: Advanced Configuration and Power Interface specification.
+ASWG:: ACPI Specification Working Group
 Device:: Hardware component or set of interrelated hardware registers.
 Device ID:: Plug and Play ID or ACPI ID of a device.
 GUID:: Globally Unique Identifier. A 128-bit value used to uniquely
@@ -62,6 +69,9 @@ GUID:: Globally Unique Identifier. A 128-bit value used to uniquely
    without the help of a centralized authority. This allows the
    generation of names that will never conflict, even among multiple,
    unrelated parties.
+OSPM:: Operating System Power Management
+PNP:: Plug and Play
+UEFI:: Unified Extensible Firmware Interface
 UUID:: Universal Unique Identifier, a synonym for GUID.
 
 ### Conventions
@@ -72,4 +82,256 @@ Computer Text:: ``monospace text`` is used to represent computer
    inputs or outputs.
 Stress:: *bold text* is used to add emphasis to terms.
 Terms:: _italic text_ is used to highlight important terminology.
+
+### References
+
+[bibliography]
+- [[[ACPI]]] Advanced Configuration and Power Interface (ACPI) Specification,
+  Version 6.3, January 2019.  Copyright (c) 2018, Unified Extensible
+  Firmware Interface (UEFI) Forum, Inc. https://uefi.org/specifications
+- [[[RFC2119]]] https://www.ietf.org/rfc/rfc2119.txt
+
+
+## General Recommendations
+
+### Using ``_DSD`` versus ``_DSM``
+
+Although in principle the ``_DSM`` (Device Specific Method) may be used to
+implement the functionality provided by ``_DSD``, it is not recommended to
+do so. Since ``_DSD`` is better suited for providing device configuration
+data, it should be used for this purpose where applicable. However, there
+are situations in which where using ``_DSM`` instead of ``_DSD`` needs to
+be considered. Generally, all situations in which it would be necessary to
+implement ``_DSD`` as a ``Method()`` for technical reasons fall into this
+category, but in particular ``_DSD`` should not write into device
+registers in addition to returning the data. In addition to that, ``_DSD``
+must return the same data every time it is evaluated, so if that cannot
+be guaranteed, ``_DSM`` has to be used instead.
+
+### General ``_DSD`` Definition Template
+
+Wherever possible, it is recommended to implement ``_DSD`` as a ``Name()``
+as opposed to a ``Method()`` in order to avoid possible programmatic
+errors and computational overhead that are sometimes associated with
+the execution of AML (ASL Machine Language) code. In that case the
+definition of ``_DSD`` should follow this template:
+
+// use spaces, not tabs!
+.General ``_DSD`` Template
+....
+    Name (_DSD, Package () {
+        ToUUID("UUID1"),
+        Package () {
+           ...
+        },
+
+        ToUUID("UUID2"),
+        Package () {
+           ...
+        },
+
+        ...
+
+        ToUUID("UUIDn"),
+        Package () {
+           ...
+        }
+
+    })
+....
+
+As noted in the introduction, ``_DSD`` returns a ``Package()`` with
+one or more pairs of elements.  The first element of each pair -- i.e.,
+the first and every following odd element of the total ``Package()`` --
+is a Universal Unique Identifier (UUID).  The second element of each
+pair -- and every even element of the total ``Package()`` -- is another
+``Package()`` Data Structure.  Each UUID dictates the format and content
+of the Data Structure immediately following it.
+
+Only the well-known UUIDs and their corresponding Data Structures defined
+in this guide should be used.  The behavior of any other UUIDs and Data
+Structures are *undefined*.
+
+
+## Well-Known ``_DSD`` UUIDs and Data Structure Formats
+
+### Device Properties UUID
+
+This section specifies the data format associated with UUID:
+
+*daffd814-6eba-4d8c-8a91-bc9bbf4aa301*
+
+(Device Properties UUID) for the ``_DSD`` (Device Specific Data) ACPI
+device configuration object.
+
+#### Data Format Definition
+
+The device properties UUID:
+
+*daffd814-6eba-4d8c-8a91-bc9bbf4aa301*
+
+defines the data format for the ``Package()`` (Data Structure) immediately
+following it as a list of Packages of length two (2), known as Properties.
+The first element of each Property (the Key) must be a String and the
+second element (the Value) must be:
+
+* an Integer,
+* a String,
+* a Reference, or
+* a Package consisting entirely of Integer, String, or Reference objects
+  (and specifically not containing a nested Package).
+
+The list of valid Keys, and the format and interpretation of the
+corresponding Values, depends on the PNP or ACPI device ID (e.g., ``_HID``)
+of the Device containing the ``_DSD``.  For instance, the PNP device ID
+returned by ``_HID`` for Device object ``MDEV`` below will determine the
+list of valid Keys and the corresponding Value data formats for that
+Device object's ``_DSD``.
+
+....
+Device (MDEV) {
+    Name (_HID, "PNP####")
+
+    Name (_DSD, Package () {
+        ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+        Package () {
+            Package (2) {...},     // Property 1
+            Package (2) {...},     // Property 2
+            ...
+            Package (2) {...}      // Property n
+        }
+    })
+    ...
+}
+....
+
+In the context of the Device Properties UUID, each Property is a
+characteristic of the hardware itself or the way it is used in the
+system in which it is incorporated, as opposed to software configuration
+data. As such, the list of valid property Keys and Value data formats
+associated with them must be defined by the device vendor in a way that
+is independent of the firmware interface to be used on any given platform.
+
+Multiple Properties with the same Key in a single Data Structure associated
+with the Device Properties UUID are not permitted.
+
+#### Device Properties UUID Rules
+
+Properties described in a Device Properties UUID ``_DSD`` are intended
+to be used in addition to, and not instead of, the existing mechanisms
+defined by the ACPI specification. For this reason, as a rule, Device
+Properties should only be used if the ACPI specification does not make
+direct provisions for handling the underlying use case. ACPI provides
+a number of generic interfaces to operating systems kernels, and
+these should continue to function without requiring the kernels to
+directly parse a device properties ``_DSD``. For example, properties
+that describe how to turn voltage regulators, or clocks, on and off,
+should not be used, as these should be managed via power resource
+``_ON``/``_OFF`` methods, or device ``_PSx`` methods.
+
+It is not permitted to use Properties in a data structure associated
+with the Device Properties UUID to provide the OSPM and device drivers
+with the same information that can be provided as device resources
+via ``_CRS`` (Current Resource Settings). In case of any conflicts
+between such Properties and the information returned by ``_CRS``, the
+latter always takes precedence.
+
+Properties of a Device may depend on the order of the resources
+provided via ``_CRS`` or the order of the resources of a particular
+type. For instance, a Property may identify an IRQ via an index into
+the IRQ resources provided via ``_CRS`` rather than providing an absolute
+IRQ number. This avoids duplication between the Properties and ``_CRS``,
+making it easier to change the resources of a Device in one place.
+
+#### Examples
+
+##### Example Valid Property Representations
+
+The following examples illustrate valid Property Value data types
+for the Device Properties UUID.
+
+....
+Package (2) {"length", 16}
+Package (2) {"device", \_SB.FOO.BAZ}
+Package (2) {"sizes", Package (3) {16, 32, 0}}
+Package (2) {"labels", Package (4) {"foo", _SB.FOO, "bar", __SB.BAR)}
+Package (2) {"default-state", "on"}
+....
+
+#### ``_DSD`` Dependency on ``_CRS``
+
+The following example illustrates a dependency of Properties
+returned by ``_DSD`` (with the Device Properties UUID) on device
+resources returned by ``_CRS``. In this particular case, the ``"gpios"``
+Properties returned by the ``_DSD`` for devices ``LEDH`` and ``LEDM``
+contain references to ``GpioIo`` resources in the ``_CRS`` of device
+``LEDS``.
+
+Each of these references consists of a path to the device
+object containing the ``_CRS`` in question and three integer numbers.
+The first two of these numbers are indexes to the ``_CRS`` content.
+Specifically, they are the index of the ``GpioIo`` resource and the
+index of the pin in that resource’s GPIO pin list pointed to by the
+given reference, respectively.  The fourth number is an additional
+parameter to be consumed by the driver of the ``LEDS`` device.
+
+This means that the ``"gpios"`` Property of device ``LEDH`` in this
+example points to the first (index 0) ``GpioIo`` resource in the ``_CRS``
+of device ``LEDS`` and to the first (index 0) pin in its GPIO pin list
+(pin 10). In turn, the ``"gpios"`` Property of device ``LEDM`` points
+to the second (index 1) ``GpioIo`` resource in the ``_CRS`` of device
+``LEDS`` and to the first (index 0) pin in its GPIO pin list (pin 11).
+
+....
+Scope (\_SB.PCI0.LPC)
+{
+    Device (LEDS)
+    {
+        Name (_HID, "PNP####")
+
+        Name (_CRS, ResourceTemplate ()
+        {
+            GpioIo (Exclusive, PullDown, 0, 0, IoRestrictionOutputOnly,
+                    "\\_SB.PCI0.LPC", 0, ResourceConsumer,,) { 10 }
+            GpioIo (Exclusive, PullUp, 0, 0, IoRestrictionInputOnly,
+                    "\\_SB.PCI0.LPC", 0, ResourceConsumer,,) { 11 }
+        })
+
+        Device (LEDH)
+        {
+            Name (_HID, "PNP####")
+            Name (_DSD, Package () {
+                ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+                Package () {
+                    Package (2) {"label", "Heartbeat"},
+                    Package (2) {"gpios", Package (4) {
+                                            \_SB.PCI0.LPC.LEDS, 0, 0, 1
+                    }},
+                    Package (2) {"default-trigger", "heartbeat"},
+                    Package (2) {"default-state", "on"},
+                    Package (2) {"retain-state-suspended", 1},
+                }
+            })
+        }
+
+        Device (LEDM)
+        {
+            Name (_HID, "PNP####")
+
+            Name (_DSD, Package () {
+                ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+                Package () {
+                    Package (2) {"label", "MMC0 Activity"},
+                    Package (2) {"gpios", Package (4) {
+                                            \_SB.PCI0.LPC.LEDS, 1, 0, 1
+                    }},
+                    Package (2) {"default-trigger", "mmc0"},
+                    Package (2) {"default-state", "on"},
+                    Package (2) {"retain-state-suspended", 1},
+                }
+            })
+        }
+    }
+}
+....
 
