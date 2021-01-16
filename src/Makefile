@@ -5,6 +5,8 @@
 ASCIIDOCTOR = asciidoctor
 DSD_GUIDE = dsd-guide
 PANDOC = pandoc
+PNGSRC = fig1.ditaa fig2.ditaa
+PNGS = $(PNGSRC:.ditaa=.png)
 
 # Build the guide in several formats
 all: $(DSD_GUIDE).md $(DSD_GUIDE).pdf $(DSD_GUIDE).html
@@ -21,7 +23,7 @@ $(DSD_GUIDE).pdf: $(DSD_GUIDE).adoc
 $(DSD_GUIDE).html: $(DSD_GUIDE).adoc
 	$(ASCIIDOCTOR) -d book -b html $<
 
-$(DSD_GUIDE).adoc: $(PARTS)
+$(DSD_GUIDE).adoc: $(PNGS)
 	touch $@
 
 install: all
@@ -35,11 +37,16 @@ clean:
 	rm -f $(DSD_GUIDE).md
 	rm -f $(DSD_GUIDE).pdf
 	rm -f $(DSD_GUIDE).html
+	rm -f $(PNGS)
 
 # handy shortcuts for installing necessary packages: YMMV
 install-debs:
-	sudo apt-get install pandoc asciidoctor ruby-asciidoctor-pdf
+	sudo apt-get install pandoc asciidoctor ruby-asciidoctor-pdf ditaa
 
 install-rpms:
 	sudo dnf install pandoc rubygem-asciidoctor rubygem-asciidoctor-pdf
+	sudo dnf install ditaa
+
+%.png: %.ditaa
+	ditaa $< $@
 

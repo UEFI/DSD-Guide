@@ -496,3 +496,12 @@ Device(SWC0) {
 
 } // End SWC0
 ....
+
+### Xyzzy
+
+.Figure 1: Example Graph
+image::fig1.png[Example Graph]
+
+.Figure 2: Four Devices Interconnected in Two Graphs
+image::fig2.png[Four Devices, Two Graphs]
+
