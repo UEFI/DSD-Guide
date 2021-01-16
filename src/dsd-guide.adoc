@@ -350,3 +350,149 @@ Scope (\_SB.PCI0.LPC)
 }
 ....
 
+
+### Hierarchical Data Extension UUID
+
+This section specifies the data format associated with UUID:
+
+*dbb8e3e6-5886-4ba6-8795-1319f52a966b*
+
+(Hierarchical Data Extension UUID) for the ``_DSD`` (Device Specific Data) ACPI
+device configuration object.
+
+#### Data Format Definition
+
+The Hierarchical Data Extension UUID:
+
+*dbb8e3e6-5886-4ba6-8795-1319f52a966b*
+
+defines the data format for the ``Package()`` (Data Structure) immediately
+following it as a list of Packages of length two (2), known as Sub-node Links.
+The first element of each Sub-node Link (the Key) must be a String and the
+second element (the Target) must be either a String encoding the name of
+the referenced ACPI object or a reference to the ACPI object. That name
+can be a fully qualified path, a relative path, or a simple name segment
+utilizing the ACPI namespace search rules as defined by the ACPI
+specification <<ACPI>> (Section 5.3 “ACPI Namespace”, Section 19.2.2
+“ASL Name and Pathname Terms” and Section 19.3.2.2 “Strings”).
+
+Moreover, the ACPI object pointed to by the Target (the Target Object)
+must evaluate to a Package formatted in accordance with the ``_DSD``
+return value format defined by the ACPI specification (Section 6.2.5).
+Also, like ``_DSD``, it must return the same data every time it is
+evaluated and the meaning of those data is the same as for analogous
+data returned by ``_DSD``.
+
+The Key of each Sub-node Link must be unique within the enclosing
+Data Structure.  That is, it is invalid to put two Sub-node Links
+with identical Keys into one enclosing Package.
+
+This allows hierarchical device configuration information to be
+represented as a hierarchy of ACPI objects returning Packages
+following the ``_DSD`` data Package formatting rules. Then, each
+of those objects may be regarded as a Data-only Subnode of the
+Device object holding the ``_DSD`` at the top of the hierarchy.
+
+For maximum interoperability, it is recommended to put all
+Target Objects referenced as Strings into the same scope in
+which the objects that return data including their names are located.
+If using object references, the resolution of the referenced object
+is managed by the AML interpreter, and there is no limitation
+placed on the location of the referenced object.
+
+If the Target of any property within a Package is a Reference, then
+all Targets within and beneath the Package must also be References,
+not Strings. Implementers are encouraged to use exclusively Strings
+or References throughout the hierarchy.
+
+#### Example
+
+The following example illustrates the possible use of the Hierarchical
+Data Extension UUID and Sub-node Links. It contains a definition of a
+master Device (``SWC0``), three Data-only Sub-nodes (``DP0P``, ``DPNP``,
+``DP00``) and one child Device object (``SWD0``) under it. In addition,
+the Data-only Sub-node ``DP00`` is a Sub-node of ``DPNP`` (which is a
+direct Sub-node of the master Device). Additionally, a common set of
+properties (``COMN``) is provided and referenced by ``DP0P``, ``DPNP``,
+and ``DP00``. This allows the firmware developer to ensure that
+information common to multiple devices is identical.
+
+....
+Device(SWC0) {
+    Name(_HID, "VEND0000") // sample Vendor ID - do not use
+    Name(_DSD, Package() {
+        ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+        Package () {
+            Package (2) {...}, // Property 1
+            ...
+            Package (2) {...}, // Property n
+        },
+        ToUUID("dbb8e3e6-5886-4ba6-8795-1319f52a966b"),
+        Package () {
+            Package (2) {"Alice", "DP0P"} // String example
+            Package (2) {"Frank", “DPNP”} // String example
+        }
+    })
+
+    Name(DP0P, Package(){ // Data-only subnode of SWC0
+        ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+        Package () {
+            Package (2) {...}, // Property 1
+            ...
+            Package (2) {...} // Property n
+        },
+        ToUUID("dbb8e3e6-5886-4ba6-8795-1319f52a966b"),
+        Package () {
+            Package (2) {"common-properties", ^COMN} // Reference
+        }
+    })
+
+    Name(DPNP, Package(){ // Data-only subnode of SWC0
+        ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+        Package () {
+            Package (2) {...}, // Property 1
+            Package (2) {...} // Property 2
+        },
+        ToUUID("dbb8e3e6-5886-4ba6-8795-1319f52a966b"),
+        Package () {
+            Package (2) {"child-of-Frank", "DP00"},
+            Package (2) {"common-properties", ^COMN} // Reference
+        }
+    })
+
+    Name(DP00, Package(){ // Data-only subnode of DPNP
+        ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+        Package () {
+            Package (2) {...}, // Property 1
+            ...
+            Package (2) {...} // Property n
+        },
+        ToUUID("dbb8e3e6-5886-4ba6-8795-1319f52a966b"),
+        Package () {
+            Package (2) {"common-properties", ^COMN} // Reference
+        }
+    })
+
+    Device (SWD0) {
+        Name(_ADR, ...)
+        Name(_DSD, Package() {
+            ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+            Package () {
+                Package (2) {...}, // Property 1
+                ...
+                Package (2) {...} // Property n
+            }
+        })
+    } // End SWD0
+
+    Name(COMN, Package() { // Common properties
+        ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+        Package () {
+            Package (2) {...}, // Property 1
+            ...
+            Package (2) {...} // Property n
+        }
+    }) // End COMN
+
+} // End SWC0
+....
