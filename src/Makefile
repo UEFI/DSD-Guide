@@ -44,8 +44,8 @@ install-debs:
 	sudo apt-get install pandoc asciidoctor ruby-asciidoctor-pdf ditaa
 
 install-rpms:
-	sudo dnf install pandoc rubygem-asciidoctor rubygem-asciidoctor-pdf
-	sudo dnf install ditaa
+	sudo dnf install pandoc rubygem-asciidoctor rubygem-asciidoctor-pdf \
+		ditaa
 
 %.png: %.ditaa
 	ditaa $< $@
