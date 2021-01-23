@@ -245,10 +245,10 @@ making it easier to change the resources of a Device in one place.
 
 #### Property Naming
 
-While the Key for a Property may be any String, there is the possibility
-of name collision.  For example, two vendors could use the String
-``"interrupts"`` as a Key.  The problem is that each vendor may have
-very different use cases for the Value.  One use case could be a
+While the Key for a Property may be any String, there is a very high
+probability of name collision.  For example, two vendors could use the
+String ``"interrupts"`` as a Key.  The problem is that each vendor may
+have very different use cases for the Value.  One use case could be a
 Boolean value (``"yes"`` means interrupts are supported, ``"no"`` means
 the device must be polled).  A second use case could be a list
 of valid IRQs for the device (``Package() {1, 2, 3}``).
@@ -257,6 +257,36 @@ It is highly recommended that each vendor prefix their Key name with
 their registered PNP or ACPI vendor ID in order to avoid name collisions.
 For example, use ``abcd-interrupts`` instead of ``interrupts``, especially
 if the word is known to be in common use in the kernel.
+
+Due to historical usage, Appendix A contains some Keys that do not have
+any prefix at all.  These should not be used in the future; they should
+be considered deprecated.  In Appendix B, prefixed names for these same
+Keys are defined and should be used henceforth.
+
+The reason these older Key definitions have no prefix is that there
+was at one time the concept of a global namespace for these Keys, and
+a process for registering them and defining them.  As a practical matter,
+hardware and software vendors have ignored the whole thing and used the
+Keys in Appendix A as _de facto_ standards.  While we still have the
+idea of a global namespace for Keys, from now on these must be prefixed
+with ``acpi-`` in the interest of avoiding name collisions.  In order
+to create a Key in the ``acpi`` namespace, it must be requested as a
+merge request to this document via (see https://github.com/ahs3/dsd-guide).
+These will be reviewed by the UEFI Forum for acceptance.
+
+In Appendix C is a list of the currently known Key prefixes.  Any vendor
+wishing to claim a prefix may do so by requesting a merge request to
+this document via github (https://github.com/ahs3/dsd-guide, as above).
+How the vendor chooses to define anything after their prefix is entirely
+up to them.  For example, always assume that ``abcd-irq`` and ``lmno-irq``
+are very different Keys, even though both have ``irq`` in the name;
+vendor ``abcd`` and vendor ``lmno`` could have radically different
+semantics for the term ``irq``.
+
+Property names that are not one of those grandfathered in through
+Appendix A, or defined in Appendix B, or use a prefix not listed in
+Appendix C must not be used.  The use of ``_DSD`` Device Properties
+under those circumstance may have unpredictable outcomes.
 
 #### Examples
 
@@ -697,4 +727,169 @@ Scope (\_SB) {
 *3ECBC8B6-1D0E-4FB3-8107-E627F805C6CD*
 
 https://developer.arm.com/docs/den0067/latest/acpi-for-coresighttm-10-platform-design-document
+
+
+[appendix]
+## Deprecated Device Properties
+The following Device Properties have become _de facto_ standard usage.
+However, in the interest of avoiding name conflicts in the future, these
+should be considered deprecated; the entries in Appendix B should be
+used instead.
+
+....
+---------------------------------------------------------------------------
+    Property: phy-channel
+    Value:    Integer (ASL assumes hexadecimal)
+    Description:
+        If present, defines the PHY channel to be used by this device
+    Example:
+        Package (2) { "phy-channel", 3 }
+
+---------------------------------------------------------------------------
+    Property: phy-mode
+    Value:    String, one of the following:
+              "na"         => none available
+              "mii"        => media independent interface (MII)
+              "gmii"       => gigabit MII
+              "sgmii"      => serial gigabit MII
+              "tbi"        => ten bit interface
+              "revmii"     => reverse MII
+              "rmii"       => reduced MII
+              "rgmii"      => reduced gigabit MII (RGMII)
+              "rgmii-id"   => RGMII with internal delay
+              "rgmii-rxid" => RGMII with receive delay only
+              "rgmii-txid" => RGMII with transmit delay only
+              "rtbi"       => reduced ten bit interface
+              "smii"       => serial MII
+              "xgmii"      => 10 gigabit MII
+              "moca"       => multimedia over coax
+              "qsgmii      => quad serial gigabit MII
+    Description:
+        Defines the PHY mode to be used for this device
+    Example:
+        Package (2) { "phy-mode", "xgmii" }
+
+---------------------------------------------------------------------------
+    Property: mac-address
+    Value:    6-byte Package of hexadecimal values
+    Description:
+        Provides the Ethernet address assigned to the MAC
+        in a network device (also known as a MAC address)
+    Example:
+        Package (2) { "mac-address",
+            Package (6) { 00, 11, 22, 33, 44, 55 }
+        }
+
+---------------------------------------------------------------------------
+    Property: max-transfer-unit
+    Value:    Integer (ASL assumes hexadecimal)
+    Description:
+        Specifies the MTU (IEEE defined maxium transfer unit)
+        supported by the device
+    Example:
+        Package (2) { "max-transfer-unit", 5dc } // MTU of 1500
+
+---------------------------------------------------------------------------
+    Property: max-speed
+    Value:    Integer (ASL assumes hexadecimal)
+    Description:
+        Specifies the maximum speed in Mbits/second supported by the device
+    Example:
+        Package (2) { "max-speed", 3e8 } // 1000 Mbps
+
+....
+
+[appendix]
+## Global Device Property Usage
+The following Device Properties are part of the ``acpi-`` Device Property
+Key namespace. These should be used instead of the entries in Appendix A.
+
+Request for additional Key names in the ``acpi-`` namespace should be
+made as a github merge request to this document.
+
+....
+---------------------------------------------------------------------------
+    Property: acpi-phy-channel
+    Value:    Integer (ASL assumes hexadecimal)
+    Description:
+        If present, defines the PHY channel to be used by this device
+    Example:
+        Package (2) { "phy-channel", 3 }
+
+---------------------------------------------------------------------------
+    Property: acpi-phy-mode
+    Value:    String, one of the following:
+              "na"         => none available
+              "mii"        => media independent interface (MII)
+              "gmii"       => gigabit MII
+              "sgmii"      => serial gigabit MII
+              "tbi"        => ten bit interface
+              "revmii"     => reverse MII
+              "rmii"       => reduced MII
+              "rgmii"      => reduced gigabit MII (RGMII)
+              "rgmii-id"   => RGMII with internal delay
+              "rgmii-rxid" => RGMII with receive delay only
+              "rgmii-txid" => RGMII with transmit delay only
+              "rtbi"       => reduced ten bit interface
+              "smii"       => serial MII
+              "xgmii"      => 10 gigabit MII
+              "moca"       => multimedia over coax
+              "qsgmii      => quad serial gigabit MII
+    Description:
+        Defines the PHY mode to be used for this device
+    Example:
+        Package (2) { "phy-mode", "xgmii" }
+
+---------------------------------------------------------------------------
+    Property: acpi-mac-address
+    Value:    6-byte Package of hexadecimal values
+    Description:
+        Provides the Ethernet address assigned to the MAC
+        in a network device (also known as a MAC address)
+    Example:
+        Package (2) { "mac-address",
+            Package (6) { 00, 11, 22, 33, 44, 55 }
+        }
+
+---------------------------------------------------------------------------
+    Property: acpi-max-transfer-unit
+    Value:    Integer (ASL assumes hexadecimal)
+    Description:
+        Specifies the MTU (IEEE defined maxium transfer unit)
+        supported by the device
+    Example:
+        Package (2) { "max-transfer-unit", 5dc } // MTU of 1500
+
+---------------------------------------------------------------------------
+    Property: acpi-max-speed
+    Value:    Integer (ASL assumes hexadecimal)
+    Description:
+        Specifies the maximum speed in Mbits/second supported by the device
+    Example:
+        Package (2) { "max-speed", 3e8 } // 1000 Mbps
+
+....
+
+[appendix]
+## Known Device Property Prefixes
+The following table contains the prefixes of Device Property Keys
+that have been made known to the UEFI Forum.  These prefixes are to
+be used in naming Device Property Keys in order to avoid name collisions.
+For example, if we have the prefix ``abc`` and ``def``, we can be assured
+that ``abc-foo`` is most likely not the same thing as ``def-foo`` unless
+the owners of those prefixes say otherwise.
+
+The add a prefix to this list and reserve it for your use, please submit
+a merge request to add a row to the table below.  It must include the
+prefix desired, the organization using the prefix, and a contact email
+for any questions that may arise.
+
+.Known Device Property Prefixes
+|===
+| Prefix | Owner | Email
+
+| ``acpi``
+| UEFI Forum
+| aswg@uefi.org
+|===
 
