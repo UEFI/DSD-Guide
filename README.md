@@ -17,11 +17,23 @@ Attribution 4.0 International License (CC-BY 4.0).  The full license
 text is available at https://creativecommons.org/licenses/by/4.0/.
 
 # Repository Branches
+
 * All development occurs on ``main``; no content on that branch is to
 be considered authoritative.
 * When releases are made, they will be placed on a separate branch with
 the release name -- e.g., branch ``v1.2`` would contain the 1.2 release
 of the guide.
 
-*Last Update: 2021-01-16*
+# Document Formats
+
+The source format for this document is asciidoc (.adoc) as this works
+well when being viewed in github.  Please note that all other formats
+are provided as a convenience; the asciidoc and PDF formats will generally
+look the best and get the most scrutiny.  Due to conversion errors, some
+of the other formats may not look exactly the same as the original asciidoc
+and PDF versions.  The asciidoc source is the canonical version, in the
+case of any differences, and all changes should be submitted against that
+source file.
+
+*Last Update: 2021-03-04*
 

@@ -12,7 +12,7 @@ PNGS = $(PNGSRC:.ditaa=.png)
 all: $(DSD_GUIDE).md $(DSD_GUIDE).pdf $(DSD_GUIDE).html $(DSD_GUIDE).rst
 
 $(DSD_GUIDE).md: $(DSD_GUIDE).xml
-	$(PANDOC) -f docbook -t markdown_strict $< -o $@ 
+	$(PANDOC) -f docbook -t gfm $< -o $@ 
 
 $(DSD_GUIDE).xml: $(DSD_GUIDE).adoc
 	$(ASCIIDOCTOR) -d book -b docbook $<
@@ -30,6 +30,7 @@ $(DSD_GUIDE).adoc: $(PNGS)
 	touch $@
 
 install: all
+	cp $(DSD_GUIDE).adoc ..
 	cp $(DSD_GUIDE).xml ..
 	cp $(DSD_GUIDE).md ..
 	cp $(DSD_GUIDE).pdf ..
