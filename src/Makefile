@@ -9,7 +9,7 @@ PNGSRC = fig1.ditaa fig2.ditaa
 PNGS = $(PNGSRC:.ditaa=.png)
 
 # Build the guide in several formats
-all: $(DSD_GUIDE).md $(DSD_GUIDE).pdf $(DSD_GUIDE).html
+all: $(DSD_GUIDE).md $(DSD_GUIDE).pdf $(DSD_GUIDE).html $(DSD_GUIDE).rst
 
 $(DSD_GUIDE).md: $(DSD_GUIDE).xml
 	$(PANDOC) -f docbook -t markdown_strict $< -o $@ 
@@ -23,6 +23,9 @@ $(DSD_GUIDE).pdf: $(DSD_GUIDE).adoc
 $(DSD_GUIDE).html: $(DSD_GUIDE).adoc
 	$(ASCIIDOCTOR) -d book -b html $<
 
+$(DSD_GUIDE).rst: $(DSD_GUIDE).md
+	$(PANDOC) -f gfm -t rst $< -o $@ 
+
 $(DSD_GUIDE).adoc: $(PNGS)
 	touch $@
 
@@ -31,12 +34,14 @@ install: all
 	cp $(DSD_GUIDE).md ..
 	cp $(DSD_GUIDE).pdf ..
 	cp $(DSD_GUIDE).html ..
+	cp $(DSD_GUIDE).rst ..
 
 clean:
 	rm -f $(DSD_GUIDE).xml
 	rm -f $(DSD_GUIDE).md
 	rm -f $(DSD_GUIDE).pdf
 	rm -f $(DSD_GUIDE).html
+	rm -f $(DSD_GUIDE).rst
 	rm -f $(PNGS)
 
 # handy shortcuts for installing necessary packages: YMMV
