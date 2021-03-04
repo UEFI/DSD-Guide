@@ -4,7 +4,7 @@
 <book xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0" xml:lang="en">
 <info>
 <title>_DSD (Device Specific Data) Implementation Guide</title>
-<date>January 2021</date>
+<date>March 2021</date>
 <author>
 <personname>
 <firstname>UEFI</firstname>
@@ -15,8 +15,8 @@
 <authorinitials>UAS</authorinitials>
 <revhistory>
 <revision>
-<revnumber>2.0-rc0</revnumber>
-<date>January 2021</date>
+<revnumber>2.0-rc1</revnumber>
+<date>March 2021</date>
 <authorinitials>UAS</authorinitials>
 </revision>
 </revhistory>
@@ -353,11 +353,11 @@ Keys in Appendix A as <emphasis>de facto</emphasis> standards.  While we still h
 idea of a global namespace for Keys, from now on these must be prefixed
 with <literal>acpi-</literal> in the interest of avoiding name collisions.  In order
 to create a Key in the <literal>acpi</literal> namespace, it must be requested as a
-merge request to this document via (see <link xl:href="https://github.com/ahs3/dsd-guide">https://github.com/ahs3/dsd-guide</link>).
+merge request to this document via (see <link xl:href="https://github.com/UEFI/DSD-Guide">https://github.com/UEFI/DSD-Guide</link>).
 These will be reviewed by the UEFI Forum for acceptance.</simpara>
 <simpara>In Appendix C is a list of the currently known Key prefixes.  Any vendor
 wishing to claim a prefix may do so by requesting a merge request to
-this document via github (<link xl:href="https://github.com/ahs3/dsd-guide">https://github.com/ahs3/dsd-guide</link>, as above).
+this document via github (<link xl:href="https://github.com/UEFI/DSD-Guide">https://github.com/UEFI/DSD-Guide</link>, as above).
 How the vendor chooses to define anything after their prefix is entirely
 up to them.  For example, always assume that <literal>abcd-irq</literal> and <literal>lmno-irq</literal>
 are very different Keys, even though both have <literal>irq</literal> in the name;

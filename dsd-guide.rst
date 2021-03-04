@@ -284,13 +284,13 @@ of a global namespace for Keys, from now on these must be prefixed with
 ``acpi-`` in the interest of avoiding name collisions. In order to
 create a Key in the ``acpi`` namespace, it must be requested as a merge
 request to this document via (see
-`https://github.com/ahs3/dsd-guide <https://github.com/ahs3/dsd-guide>`__).
+`https://github.com/UEFI/DSD-Guide <https://github.com/UEFI/DSD-Guide>`__).
 These will be reviewed by the UEFI Forum for acceptance.
 
 In Appendix C is a list of the currently known Key prefixes. Any vendor
 wishing to claim a prefix may do so by requesting a merge request to
 this document via github
-(`https://github.com/ahs3/dsd-guide <https://github.com/ahs3/dsd-guide>`__,
+(`https://github.com/UEFI/DSD-Guide <https://github.com/UEFI/DSD-Guide>`__,
 as above). How the vendor chooses to define anything after their prefix
 is entirely up to them. For example, always assume that ``abcd-irq`` and
 ``lmno-irq`` are very different Keys, even though both have ``irq`` in
