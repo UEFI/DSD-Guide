@@ -5,8 +5,8 @@
 //
 # _DSD (Device Specific Data) Implementation Guide
 :author: UEFI ACPI Specification Working Group
-:revnumber: 2.0-rc0
-:revdate: January 2021
+:revnumber: 2.0-rc1
+:revdate: March 2021
 :doctype: book
 :sectnums:
 :toc: macro
