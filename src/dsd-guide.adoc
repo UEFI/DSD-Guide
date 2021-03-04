@@ -51,6 +51,28 @@ text is available at https://creativecommons.org/licenses/by/4.0/.
 ** Add a bibliography and references section.
 ** Add in process and naming recommendations.
 
+### Quick Start Guide
+* *_If you are new to ACPI_*: please start with the ACPI specification
+(see <<ACPI>>) and in particular section 6.2.5, "_DSD (Device Specific
+Data)".
+* *_If you are new to using ``_DSD`` in ACPI_*: please start by reading
+or reviewing section 6.2.5, "_DSD (Device Specific Data)" in <<ACPI>>.
+* *_If you are looking for details about a specific ``_DSD`` UUID_*: these
+are all defined in section 
+<<_well_known_dsd_uuids_and_data_structure_formats>>.  The UUIDs are:
+** Device Properties UUID: in section <<_device_properties_uuid>>
+** Hierarchical Data Extension UUID: in section
+<<_hierarchical_data_extension_uuid>>
+** Device Graph UUID: in section <<_device_graph_uuid>>
+* *_If you are looking for currently defined UEFI Device Properties_*:
+see section <<_uefi_defined_device_property_usage>>
+* *_If you are looking for currently defined Device Property Prefixes_*:
+see section <<_known_device_property_prefixes>>
+* *_If you wish to register a Device Property Prefix_*: please see section
+<<_known_device_property_prefixes>> for currently defined prefixes, and
+section <<_registering_device_properties>>.
+
+
 ### Terms
 
 The key words *MUST*, *MUST NOT*, *REQUIRED*, *SHALL*, *SHALL
