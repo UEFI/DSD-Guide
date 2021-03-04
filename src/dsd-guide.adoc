@@ -269,8 +269,8 @@ a process for registering them and defining them.  As a practical matter,
 hardware and software vendors have ignored the whole thing and used the
 Keys in Appendix A as _de facto_ standards.  While we still have the
 idea of a global namespace for Keys, from now on these must be prefixed
-with ``acpi-`` in the interest of avoiding name collisions.  In order
-to create a Key in the ``acpi`` namespace, it must be requested as a
+with ``uefi-`` in the interest of avoiding name collisions.  In order
+to create a Key in the ``uefi`` namespace, it must be requested as a
 merge request to this document via (see https://github.com/UEFI/DSD-Guide).
 These will be reviewed by the UEFI Forum for acceptance.
 
@@ -800,16 +800,16 @@ used instead.
 ....
 
 [appendix]
-## Global Device Property Usage
-The following Device Properties are part of the ``acpi-`` Device Property
+## UEFI Defined Device Property Usage
+The following Device Properties are part of the ``uefi-`` Device Property
 Key namespace. These should be used instead of the entries in Appendix A.
 
-Request for additional Key names in the ``acpi-`` namespace should be
+Request for additional Key names in the ``uefi-`` namespace should be
 made as a github merge request to this document.
 
 ....
 ---------------------------------------------------------------------------
-    Property: acpi-phy-channel
+    Property: uefi-phy-channel
     Value:    Integer (ASL assumes hexadecimal)
     Description:
         If present, defines the PHY channel to be used by this device
@@ -817,7 +817,7 @@ made as a github merge request to this document.
         Package (2) { "phy-channel", 3 }
 
 ---------------------------------------------------------------------------
-    Property: acpi-phy-mode
+    Property: uefi-phy-mode
     Value:    String, one of the following:
               "na"         => none available
               "mii"        => media independent interface (MII)
@@ -841,7 +841,7 @@ made as a github merge request to this document.
         Package (2) { "phy-mode", "xgmii" }
 
 ---------------------------------------------------------------------------
-    Property: acpi-mac-address
+    Property: uefi-mac-address
     Value:    6-byte Package of hexadecimal values
     Description:
         Provides the Ethernet address assigned to the MAC
@@ -852,7 +852,7 @@ made as a github merge request to this document.
         }
 
 ---------------------------------------------------------------------------
-    Property: acpi-max-transfer-unit
+    Property: uefi-max-transfer-unit
     Value:    Integer (ASL assumes hexadecimal)
     Description:
         Specifies the MTU (IEEE defined maxium transfer unit)
@@ -861,7 +861,7 @@ made as a github merge request to this document.
         Package (2) { "max-transfer-unit", 5dc } // MTU of 1500
 
 ---------------------------------------------------------------------------
-    Property: acpi-max-speed
+    Property: uefi-max-speed
     Value:    Integer (ASL assumes hexadecimal)
     Description:
         Specifies the maximum speed in Mbits/second supported by the device
@@ -888,7 +888,7 @@ for any questions that may arise.
 |===
 | Prefix | Owner | Email
 
-| ``acpi``
+| ``uefi``
 | UEFI Forum
 | aswg@uefi.org
 |===
