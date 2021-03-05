@@ -10,6 +10,7 @@
 :doctype: book
 :sectnums:
 :toc: macro
+:toclevels: 3
 
 // table of contents
 toc::[]
@@ -70,7 +71,7 @@ see section <<_uefi_defined_device_property_usage>>
 see section <<_known_device_property_prefixes>>
 * *_If you wish to register a Device Property Prefix_*: please see section
 <<_known_device_property_prefixes>> for currently defined prefixes, and
-section <<_registering_device_properties>>.
+section <<_device_property_naming>>.
 
 
 ### Terms
@@ -84,6 +85,7 @@ The following additional terms are used in this document:
 
 ACPI:: Advanced Configuration and Power Interface specification.
 ASWG:: ACPI Specification Working Group
+DCO:: Developer's Certificate of Origin <<DCO>>
 Device:: Hardware component or set of interrelated hardware registers.
 Device ID:: Plug and Play ID or ACPI ID of a device.
 GUID:: Globally Unique Identifier. A 128-bit value used to uniquely
@@ -111,6 +113,7 @@ Terms:: _italic text_ is used to highlight important terminology.
 - [[[ACPI]]] Advanced Configuration and Power Interface (ACPI) Specification,
   Version 6.3, January 2019.  Copyright (c) 2018, Unified Extensible
   Firmware Interface (UEFI) Forum, Inc. https://uefi.org/specifications
+- [[DCO]] Developer's Certificate of Origing. https://developercertificate.org/
 - [[[RFC2119]]] https://www.ietf.org/rfc/rfc2119.txt
 
 
@@ -265,25 +268,29 @@ the IRQ resources provided via ``_CRS`` rather than providing an absolute
 IRQ number. This avoids duplication between the Properties and ``_CRS``,
 making it easier to change the resources of a Device in one place.
 
-#### Property Naming
-
+#### Device Property Naming
 While the Key for a Property may be any String, there is a very high
 probability of name collision.  For example, two vendors could use the
-String ``"interrupts"`` as a Key.  The problem is that each vendor may
+String ``"serial-number"`` as a Key.  The problem is that each vendor may
 have very different use cases for the Value.  One use case could be a
-Boolean value (``"yes"`` means interrupts are supported, ``"no"`` means
-the device must be polled).  A second use case could be a list
-of valid IRQs for the device (``Package() {1, 2, 3}``).
+Boolean value (``"yes"`` means the device has a read-only register that
+contains a serial number, ``"no"`` means the device has no such register).
+A second use case could be that the value is the actual serial number
+("abcde-123456").
 
 It is highly recommended that each vendor prefix their Key name with
 their registered PNP or ACPI vendor ID in order to avoid name collisions.
-For example, use ``abcd-interrupts`` instead of ``interrupts``, especially
-if the word is known to be in common use in the kernel.
+What the vendor decides to use after the prefix is completely up to their
+own discretion.  For example, Vendor ABCD would use ``abcd-serial-number``
+instead of ``serial-number``, especially if the word or term is known to
+be in common use.  Please see <<_registering_prefixes>> for instructions
+on obtaining a vendor prefix.
 
-Due to historical usage, Appendix A contains some Keys that do not have
-any prefix at all.  These should not be used in the future; they should
-be considered deprecated.  In Appendix B, prefixed names for these same
-Keys are defined and should be used henceforth.
+Due to historical usage, Appendix A <<_deprecated_device_properties>>
+contains a list of Keys that do not have any prefix at all.  These should
+not be used in the future; they should be considered deprecated.  In
+Appendix B <<_uefi_defined_device_property_usage>>, prefixed names for
+these same Keys are defined and should be used henceforth.
 
 The reason these older Key definitions have no prefix is that there
 was at one time the concept of a global namespace for these Keys, and
@@ -291,24 +298,58 @@ a process for registering them and defining them.  As a practical matter,
 hardware and software vendors have ignored the whole thing and used the
 Keys in Appendix A as _de facto_ standards.  While we still have the
 idea of a global namespace for Keys, from now on these must be prefixed
-with ``uefi-`` in the interest of avoiding name collisions.  In order
-to create a Key in the ``uefi`` namespace, it must be requested as a
-merge request to this document via (see https://github.com/UEFI/DSD-Guide).
-These will be reviewed by the UEFI Forum for acceptance.
-
-In Appendix C is a list of the currently known Key prefixes.  Any vendor
-wishing to claim a prefix may do so by requesting a merge request to
-this document via github (https://github.com/UEFI/DSD-Guide, as above).
-How the vendor chooses to define anything after their prefix is entirely
-up to them.  For example, always assume that ``abcd-irq`` and ``lmno-irq``
-are very different Keys, even though both have ``irq`` in the name;
-vendor ``abcd`` and vendor ``lmno`` could have radically different
-semantics for the term ``irq``.
+with ``uefi-`` in the interest of avoiding name collisions.
 
 Property names that are not one of those grandfathered in through
 Appendix A, or defined in Appendix B, or use a prefix not listed in
 Appendix C must not be used.  The use of ``_DSD`` Device Properties
 under those circumstance may have unpredictable outcomes.
+
+#### Adding UEFI Device Properties
+In order to create a Device Property in the ``uefi`` namespace, it must
+be provided as a merge request (MR) to this document via github (see
+https://github.com/UEFI/DSD-Guide, and the file ``src/dsd-guide.adoc``).
+When submitting the MR, please provide a rationale for singling out
+this Key/Value pair as something that needs to be defined globally.
+Further, please provide a description of how the Key/Value pair is to
+be used, with a definition of the allowed values, and a brief example.
+Something similar to the definitions in Appendix B
+<<_uefi_defined_device_property_usage>> will speed up the process.
+
+Each MR will be reviewed by the UEFI Forum (specifically, the ACPI
+Specification Working Group or ASWG) at the next available opportunity.
+Acceptance, refusal, or suggested improvements, will be discussed on
+github.
+
+Once accepted, the MR will be merged into this document as part of the
+next release.
+
+Please note that each MR must also provide a Developer's Certificate of
+Origin <<DCO>> before it can be merged into this document.
+
+
+#### Registering Prefixes
+In Appendix C <<_known_device_property_prefixes>> is a list of the currently
+known Key prefixes.  Any vendor wishing to claim a prefix may do so by
+requesting a merge request (MR) to this document via github (see 
+https://github.com/UEFI/DSD-Guide, and the file ``src/dsd-guide.adoc``).
+When submitting the MR, there are only two things needed: the change
+requested to Appendix C <<_known_device_property_prefixes>>, and a
+Developer's Certificate of Origin <<DCO>>.
+
+How the vendor chooses to define anything after their prefix is entirely
+up to them.  For example, always assume that ``abcd-frammis`` and
+``lmno-frammis`` are very different Keys, even though both have ``frammis``
+in the name; vendor ``abcd`` and vendor ``lmno`` could have radically
+different semantics for the term ``frammis``.
+
+Each MR will be be reviewed by the maintainers of this document.
+Acceptance, refusal, or suggested improvements, will be discussed on
+github.
+
+Once accepted, the MR will be merged into this document as part of the
+next release.
+
 
 #### Examples
 
