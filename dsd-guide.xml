@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?asciidoc-toc?>
+<?asciidoc-toc maxdepth="3"?>
 <?asciidoc-numbered?>
 <book xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0" xml:lang="en">
 <info>
@@ -15,7 +15,7 @@
 <authorinitials>UAS</authorinitials>
 <revhistory>
 <revision>
-<revnumber>2.0-rc1</revnumber>
+<revnumber>2.0-rc2</revnumber>
 <date>March 2021</date>
 <authorinitials>UAS</authorinitials>
 </revision>
@@ -77,6 +77,52 @@ text is available at <link xl:href="https://creativecommons.org/licenses/by/4.0/
 </listitem>
 </itemizedlist>
 </section>
+<section xml:id="_quick_start_guide">
+<title>Quick Start Guide</title>
+<itemizedlist>
+<listitem>
+<simpara><emphasis role="strong"><emphasis>If you are new to ACPI</emphasis></emphasis>: please start with the ACPI specification
+(see <xref linkend="ACPI"/>) and in particular section 6.2.5, "_DSD (Device Specific
+Data)".</simpara>
+</listitem>
+<listitem>
+<simpara><emphasis role="strong"><emphasis>If you are new to using <literal>_DSD</literal> in ACPI</emphasis></emphasis>: please start by reading
+or reviewing section 6.2.5, "_DSD (Device Specific Data)" in <xref linkend="ACPI"/>.</simpara>
+</listitem>
+<listitem>
+<simpara><emphasis role="strong"><emphasis>If you are looking for details about a specific <literal>_DSD</literal> UUID</emphasis></emphasis>: these
+are all defined in section
+<xref linkend="_well_known_dsd_uuids_and_data_structure_formats"/>.  The UUIDs are:</simpara>
+<itemizedlist>
+<listitem>
+<simpara>Device Properties UUID: in section <xref linkend="_device_properties_uuid"/></simpara>
+</listitem>
+<listitem>
+<simpara>Hierarchical Data Extension UUID: in section
+<xref linkend="_hierarchical_data_extension_uuid"/></simpara>
+</listitem>
+<listitem>
+<simpara>Device Graph UUID: in section <xref linkend="_device_graph_uuid"/></simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<simpara><emphasis role="strong"><emphasis>If you are looking for currently defined UEFI Device Properties</emphasis></emphasis>:
+see section
+<link linkend="_uefi_defined_device_property_usage">UEFI Defined Device Property Usage</link>.</simpara>
+</listitem>
+<listitem>
+<simpara><emphasis role="strong"><emphasis>If you are looking for currently defined Device Property Prefixes</emphasis></emphasis>:
+see section
+<link linkend="_known_device_property_prefixes">Known Device Property Prefixes</link>.</simpara>
+</listitem>
+<listitem>
+<simpara><emphasis role="strong"><emphasis>If you wish to register a Device Property Prefix</emphasis></emphasis>: please see section
+<link linkend="_known_device_property_prefixes">Known Device Property Prefixes</link>
+for currently defined prefixes, and section <xref linkend="_registering_prefixes"/>.</simpara>
+</listitem>
+</itemizedlist>
+</section>
 <section xml:id="_terms">
 <title>Terms</title>
 <simpara>The key words <emphasis role="strong">MUST</emphasis>, <emphasis role="strong">MUST NOT</emphasis>, <emphasis role="strong">REQUIRED</emphasis>, <emphasis role="strong">SHALL</emphasis>, <emphasis role="strong">SHALL
@@ -95,6 +141,12 @@ IETF <xref linkend="RFC2119"/>.</simpara>
 <term>ASWG</term>
 <listitem>
 <simpara>ACPI Specification Working Group</simpara>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>DCO</term>
+<listitem>
+<simpara>Developer&#8217;s Certificate of Origin <xref linkend="DCO"/></simpara>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -177,6 +229,9 @@ inputs or outputs.</simpara>
 <bibliomisc><anchor xml:id="ACPI" xreflabel="[ACPI]"/> Advanced Configuration and Power Interface (ACPI) Specification,
 Version 6.3, January 2019.  Copyright (c) 2018, Unified Extensible
 Firmware Interface (UEFI) Forum, Inc. <link xl:href="https://uefi.org/specifications">https://uefi.org/specifications</link></bibliomisc>
+</bibliomixed>
+<bibliomixed>
+<bibliomisc><anchor xml:id="DCO" xreflabel="[DCO]"/> Developer&#8217;s Certificate of Origing. <link xl:href="https://developercertificate.org/">https://developercertificate.org/</link></bibliomisc>
 </bibliomixed>
 <bibliomixed>
 <bibliomisc><anchor xml:id="RFC2119" xreflabel="[RFC2119]"/> <link xl:href="https://www.ietf.org/rfc/rfc2119.txt">https://www.ietf.org/rfc/rfc2119.txt</link></bibliomisc>
@@ -328,45 +383,96 @@ the IRQ resources provided via <literal>_CRS</literal> rather than providing an 
 IRQ number. This avoids duplication between the Properties and <literal>_CRS</literal>,
 making it easier to change the resources of a Device in one place.</simpara>
 </section>
-<section xml:id="_property_naming">
-<title>Property Naming</title>
+<section xml:id="_device_property_naming">
+<title>Device Property Naming</title>
 <simpara>While the Key for a Property may be any String, there is a very high
 probability of name collision.  For example, two vendors could use the
-String <literal>"interrupts"</literal> as a Key.  The problem is that each vendor may
+String <literal>"serial-number"</literal> as a Key.  The problem is that each vendor may
 have very different use cases for the Value.  One use case could be a
-Boolean value (<literal>"yes"</literal> means interrupts are supported, <literal>"no"</literal> means
-the device must be polled).  A second use case could be a list
-of valid IRQs for the device (<literal>Package() {1, 2, 3}</literal>).</simpara>
+Boolean value (<literal>"yes"</literal> means the device has a read-only register that
+contains a serial number, <literal>"no"</literal> means the device has no such register).
+A second use case could be that the value is the actual serial number
+("abcde-123456").</simpara>
 <simpara>It is highly recommended that each vendor prefix their Key name with
 their registered PNP or ACPI vendor ID in order to avoid name collisions.
-For example, use <literal>abcd-interrupts</literal> instead of <literal>interrupts</literal>, especially
-if the word is known to be in common use in the kernel.</simpara>
-<simpara>Due to historical usage, Appendix A contains some Keys that do not have
-any prefix at all.  These should not be used in the future; they should
-be considered deprecated.  In Appendix B, prefixed names for these same
-Keys are defined and should be used henceforth.</simpara>
+What the vendor decides to use after the prefix is completely up to their
+own discretion.  For example, Vendor ABCD would use <literal>abcd-serial-number</literal>
+instead of <literal>serial-number</literal>, especially if the word or term is known to
+be in common use.  Please see <xref linkend="_registering_prefixes"/> for instructions
+on obtaining a vendor prefix.</simpara>
+<simpara>Due to historical usage, Appendix A <xref linkend="_deprecated_device_properties"/>
+contains a list of Keys that do not have any prefix at all.  These should
+not be used in the future; they should be considered deprecated.  In
+Appendix B
+<link linkend="_uefi_defined_device_property_usage:">UEFI Defined Device Property Usage</link>,
+prefixed names for these same Keys are defined and should be used henceforth.</simpara>
 <simpara>The reason these older Key definitions have no prefix is that there
 was at one time the concept of a global namespace for these Keys, and
 a process for registering them and defining them.  As a practical matter,
 hardware and software vendors have ignored the whole thing and used the
 Keys in Appendix A as <emphasis>de facto</emphasis> standards.  While we still have the
 idea of a global namespace for Keys, from now on these must be prefixed
-with <literal>acpi-</literal> in the interest of avoiding name collisions.  In order
-to create a Key in the <literal>acpi</literal> namespace, it must be requested as a
-merge request to this document via (see <link xl:href="https://github.com/UEFI/DSD-Guide">https://github.com/UEFI/DSD-Guide</link>).
-These will be reviewed by the UEFI Forum for acceptance.</simpara>
-<simpara>In Appendix C is a list of the currently known Key prefixes.  Any vendor
-wishing to claim a prefix may do so by requesting a merge request to
-this document via github (<link xl:href="https://github.com/UEFI/DSD-Guide">https://github.com/UEFI/DSD-Guide</link>, as above).
-How the vendor chooses to define anything after their prefix is entirely
-up to them.  For example, always assume that <literal>abcd-irq</literal> and <literal>lmno-irq</literal>
-are very different Keys, even though both have <literal>irq</literal> in the name;
-vendor <literal>abcd</literal> and vendor <literal>lmno</literal> could have radically different
-semantics for the term <literal>irq</literal>.</simpara>
+with <literal>uefi-</literal> in the interest of avoiding name collisions.</simpara>
 <simpara>Property names that are not one of those grandfathered in through
 Appendix A, or defined in Appendix B, or use a prefix not listed in
 Appendix C must not be used.  The use of <literal>_DSD</literal> Device Properties
 under those circumstance may have unpredictable outcomes.</simpara>
+<important>
+<title>There is no need to change existing implementations.</title>
+<simpara>As a pragmatic matter, the use of prefixes and control of the name
+space as described here is <emphasis role="strong">optional</emphasis> so that we do not disturb
+existing OS implementations and usage.  Existing Device Properties can
+continue to be used as they are today; there is no requirement to change
+them to use the new prefix scheme.</simpara>
+<simpara>However, we <emphasis role="strong">highly recommend</emphasis> that prefixes be used and that they be
+registered from this point on for future or new Device Properties.  It
+is ultimately in everyone&#8217;s best interest to be clear on who owns what
+Device Properties, and who is responsible for defining them.</simpara>
+</important>
+</section>
+<section xml:id="_adding_uefi_device_properties">
+<title>Adding UEFI Device Properties</title>
+<simpara>In order to create a Device Property in the <literal>uefi</literal> namespace, it must
+be provided as a merge request (MR) to this document via github (see
+<link xl:href="https://github.com/UEFI/DSD-Guide">https://github.com/UEFI/DSD-Guide</link>, and the file <literal>src/dsd-guide.adoc</literal>).
+When submitting the MR, please provide a rationale for singling out
+this Key/Value pair as something that needs to be defined globally.
+Further, please provide a description of how the Key/Value pair is to
+be used, with a definition of the allowed values, and a brief example.
+Something similar to the definitions in Appendix B
+<link linkend="_uefi_defined_device_property_usage:">UEFI Defined Device Property Usage</link>
+will speed up the process.</simpara>
+<simpara>Each MR will be reviewed by the UEFI Forum (specifically, the ACPI
+Specification Working Group or ASWG) at the next available opportunity.
+Acceptance, refusal, or suggested improvements, will be discussed on
+github.</simpara>
+<simpara>Once accepted, the MR will be merged into this document as part of the
+next release.</simpara>
+<simpara>Please note that each MR must also provide a Developer&#8217;s Certificate of
+Origin <xref linkend="DCO"/> before it can be merged into this document.</simpara>
+</section>
+<section xml:id="_registering_prefixes">
+<title>Registering Prefixes</title>
+<simpara>In Appendix C
+<link linkend="_known_device_property_prefixes">Known Device Property Prefixes</link>
+is a list of the currently
+known Key prefixes.  Any vendor wishing to claim a prefix may do so by
+requesting a merge request (MR) to this document via github (see
+<link xl:href="https://github.com/UEFI/DSD-Guide">https://github.com/UEFI/DSD-Guide</link>, and the file <literal>src/dsd-guide.adoc</literal>).
+When submitting the MR, there are only two things needed: the change
+requested to Appendix C
+<link linkend="_known_device_property_prefixes">Known Device Property Prefixes</link>
+and a Developer&#8217;s Certificate of Origin <xref linkend="DCO"/>.</simpara>
+<simpara>How the vendor chooses to define anything after their prefix is entirely
+up to them.  For example, always assume that <literal>abcd-frammis</literal> and
+<literal>lmno-frammis</literal> are very different Keys, even though both have <literal>frammis</literal>
+in the name; vendor <literal>abcd</literal> and vendor <literal>lmno</literal> could have radically
+different semantics for the term <literal>frammis</literal>.</simpara>
+<simpara>Each MR will be be reviewed by the maintainers of this document.
+Acceptance, refusal, or suggested improvements, will be discussed on
+github.</simpara>
+<simpara>Once accepted, the MR will be merged into this document as part of the
+next release.</simpara>
 </section>
 <section xml:id="_examples">
 <title>Examples</title>
@@ -374,15 +480,17 @@ under those circumstance may have unpredictable outcomes.</simpara>
 <title>Example Valid Property Representations</title>
 <simpara>The following examples illustrate valid Property Value data types
 for the Device Properties UUID.</simpara>
-<literallayout class="monospaced">Package (2) {"length", 16}
-Package (2) {"device", \_SB.FOO.BAZ}
-Package (2) {"sizes", Package (3) {16, 32, 0}}
-Package (2) {"labels", Package (4) {"foo", _SB.FOO, "bar", __SB.BAR)}
-Package (2) {"default-state", "on"}</literallayout>
+<literallayout class="monospaced">Package (2) {"xxyy-length", 16}
+Package (2) {"xxyy-device", \_SB.FOO.BAZ}
+Package (2) {"xxyy-sizes", Package (3) {16, 32, 0}}
+Package (2) {"xxyy-labels", Package (4) {"foo", _SB.FOO, "bar", __SB.BAR)}
+Package (2) {"xxyy-default-state", "on"}</literallayout>
+<simpara>Please note that the use of the prefix <literal>xxyy-</literal> is an example <emphasis role="strong">only</emphasis>,
+and is not meant to reflect any vendor&#8217;s actual usage.</simpara>
 </section>
 </section>
-<section xml:id="_dsd_dependency_on_crs">
-<title><literal>_DSD</literal> Dependency on <literal>_CRS</literal></title>
+<section xml:id="_dependencies_on_crs_when_using_dsd">
+<title>Dependencies on <literal>_CRS</literal> When Using <literal>_DSD</literal></title>
 <simpara>The following example illustrates a dependency of Properties
 returned by <literal>_DSD</literal> (with the Device Properties UUID) on device
 resources returned by <literal>_CRS</literal>. In this particular case, the <literal>"gpios"</literal>
@@ -595,15 +703,14 @@ a set of <emphasis>nodes</emphasis> that are connected together through <emphasi
 represent logical relationships. Often, hardware components relate to
 each other functionally, or have physical connections to each other,
 forming a graph. An example is shown below.</simpara>
-<figure>
-<title>Debug Trace Graph</title>
+<informalfigure xml:id="img-debug-trace-graph">
 <mediaobject>
 <imageobject>
 <imagedata fileref="fig1.png"/>
 </imageobject>
 <textobject><phrase>Debug Trace Graph</phrase></textobject>
 </mediaobject>
-</figure>
+</informalfigure>
 <simpara>This Debug Trace Graph includes Trace Sources (Trace 1 and Trace 2)
 that produce traces, multiplexors that combine traces from one or more
 sources, and multiple Sinks to which traces are fed. The Traces could
@@ -728,15 +835,14 @@ following figure. In this example, devices <literal>ABC</literal>, <literal>DEF<
 <literal>GHI</literal> are interconnected in the first graph topology. Devices
 <literal>ABC</literal>, <literal>GHI</literal> and <literal>JKL</literal> are interconnected in a second graph
 topology.</simpara>
-<figure>
-<title>Four Devices Interconnected in Two Graphs</title>
+<informalfigure xml:id="img-four-device-graph">
 <mediaobject>
 <imageobject>
-<imagedata fileref="fig2.png" contentwidth="Two Graphs"/>
+<imagedata fileref="fig2.png"/>
 </imageobject>
-<textobject><phrase>Four Devices</phrase></textobject>
+<textobject><phrase>Four Devices Connected in Two Graphs</phrase></textobject>
 </mediaobject>
-</figure>
+</informalfigure>
 <literallayout class="monospaced">Scope (\_SB) {
     Device (ABC) {
     ...
@@ -880,22 +986,22 @@ used instead.</simpara>
     Example:
         Package (2) { "max-speed", 3e8 } // 1000 Mbps</literallayout>
 </appendix>
-<appendix xml:id="_global_device_property_usage">
-<title>Global Device Property Usage</title>
-<simpara>The following Device Properties are part of the <literal>acpi-</literal> Device Property
+<appendix xml:id="_uefi_defined_device_property_usage">
+<title>UEFI Defined Device Property Usage</title>
+<simpara>The following Device Properties are part of the <literal>uefi-</literal> Device Property
 Key namespace. These should be used instead of the entries in Appendix A.</simpara>
-<simpara>Request for additional Key names in the <literal>acpi-</literal> namespace should be
+<simpara>Request for additional Key names in the <literal>uefi-</literal> namespace should be
 made as a github merge request to this document.</simpara>
 <literallayout class="monospaced">---------------------------------------------------------------------------
-    Property: acpi-phy-channel
+    Property: uefi-phy-channel
     Value:    Integer (ASL assumes hexadecimal)
     Description:
         If present, defines the PHY channel to be used by this device
     Example:
-        Package (2) { "phy-channel", 3 }
+        Package (2) { "uefi-phy-channel", 3 }
 
 ---------------------------------------------------------------------------
-    Property: acpi-phy-mode
+    Property: uefi-phy-mode
     Value:    String, one of the following:
               "na"         =&gt; none available
               "mii"        =&gt; media independent interface (MII)
@@ -916,35 +1022,35 @@ made as a github merge request to this document.</simpara>
     Description:
         Defines the PHY mode to be used for this device
     Example:
-        Package (2) { "phy-mode", "xgmii" }
+        Package (2) { "uefi-phy-mode", "xgmii" }
 
 ---------------------------------------------------------------------------
-    Property: acpi-mac-address
+    Property: uefi-mac-address
     Value:    6-byte Package of hexadecimal values
     Description:
         Provides the Ethernet address assigned to the MAC
         in a network device (also known as a MAC address)
     Example:
-        Package (2) { "mac-address",
+        Package (2) { "uefi-mac-address",
             Package (6) { 00, 11, 22, 33, 44, 55 }
         }
 
 ---------------------------------------------------------------------------
-    Property: acpi-max-transfer-unit
+    Property: uefi-max-transfer-unit
     Value:    Integer (ASL assumes hexadecimal)
     Description:
         Specifies the MTU (IEEE defined maxium transfer unit)
         supported by the device
     Example:
-        Package (2) { "max-transfer-unit", 5dc } // MTU of 1500
+        Package (2) { "uefi-max-transfer-unit", 5dc } // MTU of 1500
 
 ---------------------------------------------------------------------------
-    Property: acpi-max-speed
+    Property: uefi-max-speed
     Value:    Integer (ASL assumes hexadecimal)
     Description:
         Specifies the maximum speed in Mbits/second supported by the device
     Example:
-        Package (2) { "max-speed", 3e8 } // 1000 Mbps</literallayout>
+        Package (2) { "uefi-max-speed", 3e8 } // 1000 Mbps</literallayout>
 </appendix>
 <appendix xml:id="_known_device_property_prefixes">
 <title>Known Device Property Prefixes</title>
@@ -973,7 +1079,7 @@ for any questions that may arise.</simpara>
 </thead>
 <tbody>
 <row>
-<entry align="left" valign="top"><simpara><literal>acpi</literal></simpara></entry>
+<entry align="left" valign="top"><simpara><literal>uefi</literal></simpara></entry>
 <entry align="left" valign="top"><simpara>UEFI Forum</simpara></entry>
 <entry align="left" valign="top"><simpara><link xl:href="mailto:aswg@uefi.org">aswg@uefi.org</link></simpara></entry>
 </row>
