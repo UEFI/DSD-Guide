@@ -442,7 +442,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h1>_DSD (Device Specific Data) Implementation Guide</h1>
 <div class="details">
 <span id="author" class="author">UEFI ACPI Specification Working Group</span><br>
-<span id="revnumber">version 2.0-rc1,</span>
+<span id="revnumber">version 2.0-rc2,</span>
 <span id="revdate">March 2021</span>
 </div>
 </div>
@@ -456,9 +456,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_copyright_and_license_information">1.1. Copyright and License Information</a></li>
 <li><a href="#_change_log">1.2. Change Log</a></li>
-<li><a href="#_terms">1.3. Terms</a></li>
-<li><a href="#_conventions">1.4. Conventions</a></li>
-<li><a href="#_references">1.5. References</a></li>
+<li><a href="#_quick_start_guide">1.3. Quick Start Guide</a></li>
+<li><a href="#_terms">1.4. Terms</a></li>
+<li><a href="#_conventions">1.5. Conventions</a></li>
+<li><a href="#_references">1.6. References</a></li>
 </ul>
 </li>
 <li><a href="#_general_recommendations">2. General Recommendations</a>
@@ -469,13 +470,34 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_well_known_dsd_uuids_and_data_structure_formats">3. Well-Known <code>_DSD</code> UUIDs and Data Structure Formats</a>
 <ul class="sectlevel2">
-<li><a href="#_device_properties_uuid">3.1. Device Properties UUID</a></li>
-<li><a href="#_hierarchical_data_extension_uuid">3.2. Hierarchical Data Extension UUID</a></li>
-<li><a href="#_device_graph_uuid">3.3. Device Graph UUID</a></li>
+<li><a href="#_device_properties_uuid">3.1. Device Properties UUID</a>
+<ul class="sectlevel3">
+<li><a href="#_data_format_definition">3.1.1. Data Format Definition</a></li>
+<li><a href="#_device_properties_uuid_rules">3.1.2. Device Properties UUID Rules</a></li>
+<li><a href="#_device_property_naming">3.1.3. Device Property Naming</a></li>
+<li><a href="#_adding_uefi_device_properties">3.1.4. Adding UEFI Device Properties</a></li>
+<li><a href="#_registering_prefixes">3.1.5. Registering Prefixes</a></li>
+<li><a href="#_examples">3.1.6. Examples</a></li>
+<li><a href="#_dependencies_on_crs_when_using_dsd">3.1.7. Dependencies on <code>_CRS</code> When Using <code>_DSD</code></a></li>
+</ul>
+</li>
+<li><a href="#_hierarchical_data_extension_uuid">3.2. Hierarchical Data Extension UUID</a>
+<ul class="sectlevel3">
+<li><a href="#_data_format_definition_2">3.2.1. Data Format Definition</a></li>
+<li><a href="#_example">3.2.2. Example</a></li>
+</ul>
+</li>
+<li><a href="#_device_graph_uuid">3.3. Device Graph UUID</a>
+<ul class="sectlevel3">
+<li><a href="#_data_format_definition_3">3.3.1. Data Format Definition</a></li>
+<li><a href="#_example_2">3.3.2. Example</a></li>
+<li><a href="#_known_device_graph_uuids">3.3.3. Known Device Graph UUIDs</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#_deprecated_device_properties">Appendix A: Deprecated Device Properties</a></li>
-<li><a href="#_global_device_property_usage">Appendix B: Global Device Property Usage</a></li>
+<li><a href="#_uefi_defined_device_property_usage">Appendix B: UEFI Defined Device Property Usage</a></li>
 <li><a href="#_known_device_property_prefixes">Appendix C: Known Device Property Prefixes</a></li>
 </ul>
 </div>
@@ -547,7 +569,57 @@ text is available at <a href="https://creativecommons.org/licenses/by/4.0/" clas
 </div>
 </div>
 <div class="sect2">
-<h3 id="_terms">1.3. Terms</h3>
+<h3 id="_quick_start_guide">1.3. Quick Start Guide</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong><em>If you are new to ACPI</em></strong>: please start with the ACPI specification
+(see <a href="#ACPI">[ACPI]</a>) and in particular section 6.2.5, "_DSD (Device Specific
+Data)".</p>
+</li>
+<li>
+<p><strong><em>If you are new to using <code>_DSD</code> in ACPI</em></strong>: please start by reading
+or reviewing section 6.2.5, "_DSD (Device Specific Data)" in <a href="#ACPI">[ACPI]</a>.</p>
+</li>
+<li>
+<p><strong><em>If you are looking for details about a specific <code>_DSD</code> UUID</em></strong>: these
+are all defined in section
+<a href="#_well_known_dsd_uuids_and_data_structure_formats">Well-Known <code>_DSD</code> UUIDs and Data Structure Formats</a>.  The UUIDs are:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Device Properties UUID: in section <a href="#_device_properties_uuid">Device Properties UUID</a></p>
+</li>
+<li>
+<p>Hierarchical Data Extension UUID: in section
+<a href="#_hierarchical_data_extension_uuid">Hierarchical Data Extension UUID</a></p>
+</li>
+<li>
+<p>Device Graph UUID: in section <a href="#_device_graph_uuid">Device Graph UUID</a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong><em>If you are looking for currently defined UEFI Device Properties</em></strong>:
+see section
+<a href="#_uefi_defined_device_property_usage">UEFI Defined Device Property Usage</a>.</p>
+</li>
+<li>
+<p><strong><em>If you are looking for currently defined Device Property Prefixes</em></strong>:
+see section
+<a href="#_known_device_property_prefixes">Known Device Property Prefixes</a>.</p>
+</li>
+<li>
+<p><strong><em>If you wish to register a Device Property Prefix</em></strong>: please see section
+<a href="#_known_device_property_prefixes">Known Device Property Prefixes</a>
+for currently defined prefixes, and section <a href="#_registering_prefixes">Registering Prefixes</a>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_terms">1.4. Terms</h3>
 <div class="paragraph">
 <p>The key words <strong>MUST</strong>, <strong>MUST NOT</strong>, <strong>REQUIRED</strong>, <strong>SHALL</strong>, <strong>SHALL
 NOT</strong>, <strong>SHOULD</strong>, <strong>SHOULD NOT</strong>, <strong>RECOMMENDED</strong>,  <strong>MAY</strong>, and
@@ -566,6 +638,10 @@ IETF <a href="#RFC2119">[RFC2119]</a>.</p>
 <dt class="hdlist1">ASWG</dt>
 <dd>
 <p>ACPI Specification Working Group</p>
+</dd>
+<dt class="hdlist1">DCO</dt>
+<dd>
+<p>Developer&#8217;s Certificate of Origin <a href="#DCO">[DCO]</a></p>
 </dd>
 <dt class="hdlist1">Device</dt>
 <dd>
@@ -603,7 +679,7 @@ unrelated parties.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_conventions">1.4. Conventions</h3>
+<h3 id="_conventions">1.5. Conventions</h3>
 <div class="paragraph">
 <p>The following typographic connventions are used:</p>
 </div>
@@ -626,13 +702,16 @@ inputs or outputs.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_references">1.5. References</h3>
+<h3 id="_references">1.6. References</h3>
 <div class="ulist bibliography">
 <ul class="bibliography">
 <li>
 <p><a id="ACPI"></a>[ACPI] Advanced Configuration and Power Interface (ACPI) Specification,
 Version 6.3, January 2019.  Copyright (c) 2018, Unified Extensible
 Firmware Interface (UEFI) Forum, Inc. <a href="https://uefi.org/specifications" class="bare">https://uefi.org/specifications</a></p>
+</li>
+<li>
+<p><a id="DCO"></a> Developer&#8217;s Certificate of Origing. <a href="https://developercertificate.org/" class="bare">https://developercertificate.org/</a></p>
 </li>
 <li>
 <p><a id="RFC2119"></a>[RFC2119] <a href="https://www.ietf.org/rfc/rfc2119.txt" class="bare">https://www.ietf.org/rfc/rfc2119.txt</a></p>
@@ -828,27 +907,33 @@ making it easier to change the resources of a Device in one place.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_property_naming">3.1.3. Property Naming</h4>
+<h4 id="_device_property_naming">3.1.3. Device Property Naming</h4>
 <div class="paragraph">
 <p>While the Key for a Property may be any String, there is a very high
 probability of name collision.  For example, two vendors could use the
-String <code>"interrupts"</code> as a Key.  The problem is that each vendor may
+String <code>"serial-number"</code> as a Key.  The problem is that each vendor may
 have very different use cases for the Value.  One use case could be a
-Boolean value (<code>"yes"</code> means interrupts are supported, <code>"no"</code> means
-the device must be polled).  A second use case could be a list
-of valid IRQs for the device (<code>Package() {1, 2, 3}</code>).</p>
+Boolean value (<code>"yes"</code> means the device has a read-only register that
+contains a serial number, <code>"no"</code> means the device has no such register).
+A second use case could be that the value is the actual serial number
+("abcde-123456").</p>
 </div>
 <div class="paragraph">
 <p>It is highly recommended that each vendor prefix their Key name with
 their registered PNP or ACPI vendor ID in order to avoid name collisions.
-For example, use <code>abcd-interrupts</code> instead of <code>interrupts</code>, especially
-if the word is known to be in common use in the kernel.</p>
+What the vendor decides to use after the prefix is completely up to their
+own discretion.  For example, Vendor ABCD would use <code>abcd-serial-number</code>
+instead of <code>serial-number</code>, especially if the word or term is known to
+be in common use.  Please see <a href="#_registering_prefixes">Registering Prefixes</a> for instructions
+on obtaining a vendor prefix.</p>
 </div>
 <div class="paragraph">
-<p>Due to historical usage, Appendix A contains some Keys that do not have
-any prefix at all.  These should not be used in the future; they should
-be considered deprecated.  In Appendix B, prefixed names for these same
-Keys are defined and should be used henceforth.</p>
+<p>Due to historical usage, Appendix A <a href="#_deprecated_device_properties">Deprecated Device Properties</a>
+contains a list of Keys that do not have any prefix at all.  These should
+not be used in the future; they should be considered deprecated.  In
+Appendix B
+<a href="#_uefi_defined_device_property_usage:">UEFI Defined Device Property Usage</a>,
+prefixed names for these same Keys are defined and should be used henceforth.</p>
 </div>
 <div class="paragraph">
 <p>The reason these older Key definitions have no prefix is that there
@@ -857,20 +942,7 @@ a process for registering them and defining them.  As a practical matter,
 hardware and software vendors have ignored the whole thing and used the
 Keys in Appendix A as <em>de facto</em> standards.  While we still have the
 idea of a global namespace for Keys, from now on these must be prefixed
-with <code>acpi-</code> in the interest of avoiding name collisions.  In order
-to create a Key in the <code>acpi</code> namespace, it must be requested as a
-merge request to this document via (see <a href="https://github.com/UEFI/DSD-Guide" class="bare">https://github.com/UEFI/DSD-Guide</a>).
-These will be reviewed by the UEFI Forum for acceptance.</p>
-</div>
-<div class="paragraph">
-<p>In Appendix C is a list of the currently known Key prefixes.  Any vendor
-wishing to claim a prefix may do so by requesting a merge request to
-this document via github (<a href="https://github.com/UEFI/DSD-Guide" class="bare">https://github.com/UEFI/DSD-Guide</a>, as above).
-How the vendor chooses to define anything after their prefix is entirely
-up to them.  For example, always assume that <code>abcd-irq</code> and <code>lmno-irq</code>
-are very different Keys, even though both have <code>irq</code> in the name;
-vendor <code>abcd</code> and vendor <code>lmno</code> could have radically different
-semantics for the term <code>irq</code>.</p>
+with <code>uefi-</code> in the interest of avoiding name collisions.</p>
 </div>
 <div class="paragraph">
 <p>Property names that are not one of those grandfathered in through
@@ -878,9 +950,94 @@ Appendix A, or defined in Appendix B, or use a prefix not listed in
 Appendix C must not be used.  The use of <code>_DSD</code> Device Properties
 under those circumstance may have unpredictable outcomes.</p>
 </div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+<div class="title">There is no need to change existing implementations.</div>
+<div class="paragraph">
+<p>As a pragmatic matter, the use of prefixes and control of the name
+space as described here is <strong>optional</strong> so that we do not disturb
+existing OS implementations and usage.  Existing Device Properties can
+continue to be used as they are today; there is no requirement to change
+them to use the new prefix scheme.</p>
+</div>
+<div class="paragraph">
+<p>However, we <strong>highly recommend</strong> that prefixes be used and that they be
+registered from this point on for future or new Device Properties.  It
+is ultimately in everyone&#8217;s best interest to be clear on who owns what
+Device Properties, and who is responsible for defining them.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect3">
-<h4 id="_examples">3.1.4. Examples</h4>
+<h4 id="_adding_uefi_device_properties">3.1.4. Adding UEFI Device Properties</h4>
+<div class="paragraph">
+<p>In order to create a Device Property in the <code>uefi</code> namespace, it must
+be provided as a merge request (MR) to this document via github (see
+<a href="https://github.com/UEFI/DSD-Guide" class="bare">https://github.com/UEFI/DSD-Guide</a>, and the file <code>src/dsd-guide.adoc</code>).
+When submitting the MR, please provide a rationale for singling out
+this Key/Value pair as something that needs to be defined globally.
+Further, please provide a description of how the Key/Value pair is to
+be used, with a definition of the allowed values, and a brief example.
+Something similar to the definitions in Appendix B
+<a href="#_uefi_defined_device_property_usage:">UEFI Defined Device Property Usage</a>
+will speed up the process.</p>
+</div>
+<div class="paragraph">
+<p>Each MR will be reviewed by the UEFI Forum (specifically, the ACPI
+Specification Working Group or ASWG) at the next available opportunity.
+Acceptance, refusal, or suggested improvements, will be discussed on
+github.</p>
+</div>
+<div class="paragraph">
+<p>Once accepted, the MR will be merged into this document as part of the
+next release.</p>
+</div>
+<div class="paragraph">
+<p>Please note that each MR must also provide a Developer&#8217;s Certificate of
+Origin <a href="#DCO">[DCO]</a> before it can be merged into this document.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_registering_prefixes">3.1.5. Registering Prefixes</h4>
+<div class="paragraph">
+<p>In Appendix C
+<a href="#_known_device_property_prefixes">Known Device Property Prefixes</a>
+is a list of the currently
+known Key prefixes.  Any vendor wishing to claim a prefix may do so by
+requesting a merge request (MR) to this document via github (see
+<a href="https://github.com/UEFI/DSD-Guide" class="bare">https://github.com/UEFI/DSD-Guide</a>, and the file <code>src/dsd-guide.adoc</code>).
+When submitting the MR, there are only two things needed: the change
+requested to Appendix C
+<a href="#_known_device_property_prefixes">Known Device Property Prefixes</a>
+and a Developer&#8217;s Certificate of Origin <a href="#DCO">[DCO]</a>.</p>
+</div>
+<div class="paragraph">
+<p>How the vendor chooses to define anything after their prefix is entirely
+up to them.  For example, always assume that <code>abcd-frammis</code> and
+<code>lmno-frammis</code> are very different Keys, even though both have <code>frammis</code>
+in the name; vendor <code>abcd</code> and vendor <code>lmno</code> could have radically
+different semantics for the term <code>frammis</code>.</p>
+</div>
+<div class="paragraph">
+<p>Each MR will be be reviewed by the maintainers of this document.
+Acceptance, refusal, or suggested improvements, will be discussed on
+github.</p>
+</div>
+<div class="paragraph">
+<p>Once accepted, the MR will be merged into this document as part of the
+next release.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_examples">3.1.6. Examples</h4>
 <div class="sect4">
 <h5 id="_example_valid_property_representations">Example Valid Property Representations</h5>
 <div class="paragraph">
@@ -889,17 +1046,21 @@ for the Device Properties UUID.</p>
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>Package (2) {"length", 16}
-Package (2) {"device", \_SB.FOO.BAZ}
-Package (2) {"sizes", Package (3) {16, 32, 0}}
-Package (2) {"labels", Package (4) {"foo", _SB.FOO, "bar", __SB.BAR)}
-Package (2) {"default-state", "on"}</pre>
+<pre>Package (2) {"xxyy-length", 16}
+Package (2) {"xxyy-device", \_SB.FOO.BAZ}
+Package (2) {"xxyy-sizes", Package (3) {16, 32, 0}}
+Package (2) {"xxyy-labels", Package (4) {"foo", _SB.FOO, "bar", __SB.BAR)}
+Package (2) {"xxyy-default-state", "on"}</pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Please note that the use of the prefix <code>xxyy-</code> is an example <strong>only</strong>,
+and is not meant to reflect any vendor&#8217;s actual usage.</p>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_dsd_dependency_on_crs">3.1.5. <code>_DSD</code> Dependency on <code>_CRS</code></h4>
+<h4 id="_dependencies_on_crs_when_using_dsd">3.1.7. Dependencies on <code>_CRS</code> When Using <code>_DSD</code></h4>
 <div class="paragraph">
 <p>The following example illustrates a dependency of Properties
 returned by <code>_DSD</code> (with the Device Properties UUID) on device
@@ -1152,11 +1313,10 @@ represent logical relationships. Often, hardware components relate to
 each other functionally, or have physical connections to each other,
 forming a graph. An example is shown below.</p>
 </div>
-<div class="imageblock">
+<div id="img-debug-trace-graph" class="imageblock">
 <div class="content">
 <img src="fig1.png" alt="Debug Trace Graph">
 </div>
-<div class="title">Figure 1. Debug Trace Graph</div>
 </div>
 <div class="paragraph">
 <p>This Debug Trace Graph includes Trace Sources (Trace 1 and Trace 2)
@@ -1312,11 +1472,10 @@ following figure. In this example, devices <code>ABC</code>, <code>DEF</code> an
 <code>ABC</code>, <code>GHI</code> and <code>JKL</code> are interconnected in a second graph
 topology.</p>
 </div>
-<div class="imageblock">
+<div id="img-four-device-graph" class="imageblock">
 <div class="content">
-<img src="fig2.png" alt="Four Devices" width="Two Graphs">
+<img src="fig2.png" alt="Four Devices Connected in Two Graphs">
 </div>
-<div class="title">Figure 2. Four Devices Interconnected in Two Graphs</div>
 </div>
 <div class="literalblock">
 <div class="content">
@@ -1479,28 +1638,28 @@ used instead.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_global_device_property_usage">Appendix B: Global Device Property Usage</h2>
+<h2 id="_uefi_defined_device_property_usage">Appendix B: UEFI Defined Device Property Usage</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The following Device Properties are part of the <code>acpi-</code> Device Property
+<p>The following Device Properties are part of the <code>uefi-</code> Device Property
 Key namespace. These should be used instead of the entries in Appendix A.</p>
 </div>
 <div class="paragraph">
-<p>Request for additional Key names in the <code>acpi-</code> namespace should be
+<p>Request for additional Key names in the <code>uefi-</code> namespace should be
 made as a github merge request to this document.</p>
 </div>
 <div class="literalblock">
 <div class="content">
 <pre>---------------------------------------------------------------------------
-    Property: acpi-phy-channel
+    Property: uefi-phy-channel
     Value:    Integer (ASL assumes hexadecimal)
     Description:
         If present, defines the PHY channel to be used by this device
     Example:
-        Package (2) { "phy-channel", 3 }
+        Package (2) { "uefi-phy-channel", 3 }
 
 ---------------------------------------------------------------------------
-    Property: acpi-phy-mode
+    Property: uefi-phy-mode
     Value:    String, one of the following:
               "na"         =&gt; none available
               "mii"        =&gt; media independent interface (MII)
@@ -1521,35 +1680,35 @@ made as a github merge request to this document.</p>
     Description:
         Defines the PHY mode to be used for this device
     Example:
-        Package (2) { "phy-mode", "xgmii" }
+        Package (2) { "uefi-phy-mode", "xgmii" }
 
 ---------------------------------------------------------------------------
-    Property: acpi-mac-address
+    Property: uefi-mac-address
     Value:    6-byte Package of hexadecimal values
     Description:
         Provides the Ethernet address assigned to the MAC
         in a network device (also known as a MAC address)
     Example:
-        Package (2) { "mac-address",
+        Package (2) { "uefi-mac-address",
             Package (6) { 00, 11, 22, 33, 44, 55 }
         }
 
 ---------------------------------------------------------------------------
-    Property: acpi-max-transfer-unit
+    Property: uefi-max-transfer-unit
     Value:    Integer (ASL assumes hexadecimal)
     Description:
         Specifies the MTU (IEEE defined maxium transfer unit)
         supported by the device
     Example:
-        Package (2) { "max-transfer-unit", 5dc } // MTU of 1500
+        Package (2) { "uefi-max-transfer-unit", 5dc } // MTU of 1500
 
 ---------------------------------------------------------------------------
-    Property: acpi-max-speed
+    Property: uefi-max-speed
     Value:    Integer (ASL assumes hexadecimal)
     Description:
         Specifies the maximum speed in Mbits/second supported by the device
     Example:
-        Package (2) { "max-speed", 3e8 } // 1000 Mbps</pre>
+        Package (2) { "uefi-max-speed", 3e8 } // 1000 Mbps</pre>
 </div>
 </div>
 </div>
@@ -1587,7 +1746,7 @@ for any questions that may arise.</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>acpi</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uefi</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">UEFI Forum</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="mailto:aswg@uefi.org">aswg@uefi.org</a></p></td>
 </tr>
@@ -1598,8 +1757,8 @@ for any questions that may arise.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 2.0-rc1<br>
-Last updated 2021-03-04 16:18:56 -0700
+Version 2.0-rc2<br>
+Last updated 2021-03-05 17:54:30 -0700
 </div>
 </div>
 </body>
