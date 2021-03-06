@@ -31,6 +31,7 @@ $(DSD_GUIDE).adoc: $(PNGS)
 
 install: all
 	cp $(DSD_GUIDE).adoc ..
+	cp *.png ..
 	cp $(DSD_GUIDE).xml ..
 	cp $(DSD_GUIDE).md ..
 	cp $(DSD_GUIDE).pdf ..

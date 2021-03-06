@@ -5,7 +5,7 @@
 //
 # _DSD (Device Specific Data) Implementation Guide
 :author: UEFI ACPI Specification Working Group
-:revnumber: 2.0-rc1
+:revnumber: 2.0-rc2
 :revdate: March 2021
 :doctype: book
 :sectnums:
@@ -66,12 +66,14 @@ are all defined in section
 <<_hierarchical_data_extension_uuid>>
 ** Device Graph UUID: in section <<_device_graph_uuid>>
 * *_If you are looking for currently defined UEFI Device Properties_*:
-see section <<_uefi_defined_device_property_usage>>
+see section
+xref:_uefi_defined_device_property_usage[UEFI Defined Device Property Usage].
 * *_If you are looking for currently defined Device Property Prefixes_*:
-see section <<_known_device_property_prefixes>>
+see section
+xref:_known_device_property_prefixes[Known Device Property Prefixes].
 * *_If you wish to register a Device Property Prefix_*: please see section
-<<_known_device_property_prefixes>> for currently defined prefixes, and
-section <<_device_property_naming>>.
+xref:_known_device_property_prefixes[Known Device Property Prefixes]
+for currently defined prefixes, and section <<_registering_prefixes>>.
 
 
 ### Terms
@@ -289,8 +291,9 @@ on obtaining a vendor prefix.
 Due to historical usage, Appendix A <<_deprecated_device_properties>>
 contains a list of Keys that do not have any prefix at all.  These should
 not be used in the future; they should be considered deprecated.  In
-Appendix B <<_uefi_defined_device_property_usage>>, prefixed names for
-these same Keys are defined and should be used henceforth.
+Appendix B
+xref:_uefi_defined_device_property_usage:[UEFI Defined Device Property Usage],
+prefixed names for these same Keys are defined and should be used henceforth.
 
 The reason these older Key definitions have no prefix is that there
 was at one time the concept of a global namespace for these Keys, and
@@ -305,6 +308,21 @@ Appendix A, or defined in Appendix B, or use a prefix not listed in
 Appendix C must not be used.  The use of ``_DSD`` Device Properties
 under those circumstance may have unpredictable outcomes.
 
+[IMPORTANT]
+.There is no need to change existing implementations.
+====
+As a pragmatic matter, the use of prefixes and control of the name
+space as described here is *optional* so that we do not disturb
+existing OS implementations and usage.  Existing Device Properties can
+continue to be used as they are today; there is no requirement to change
+them to use the new prefix scheme.
+
+However, we *highly recommend* that prefixes be used and that they be
+registered from this point on for future or new Device Properties.  It
+is ultimately in everyone's best interest to be clear on who owns what
+Device Properties, and who is responsible for defining them.
+====
+
 #### Adding UEFI Device Properties
 In order to create a Device Property in the ``uefi`` namespace, it must
 be provided as a merge request (MR) to this document via github (see
@@ -314,7 +332,8 @@ this Key/Value pair as something that needs to be defined globally.
 Further, please provide a description of how the Key/Value pair is to
 be used, with a definition of the allowed values, and a brief example.
 Something similar to the definitions in Appendix B
-<<_uefi_defined_device_property_usage>> will speed up the process.
+xref:_uefi_defined_device_property_usage:[UEFI Defined Device Property Usage]
+will speed up the process.
 
 Each MR will be reviewed by the UEFI Forum (specifically, the ACPI
 Specification Working Group or ASWG) at the next available opportunity.
@@ -329,13 +348,16 @@ Origin <<DCO>> before it can be merged into this document.
 
 
 #### Registering Prefixes
-In Appendix C <<_known_device_property_prefixes>> is a list of the currently
+In Appendix C
+xref:_known_device_property_prefixes[Known Device Property Prefixes]
+is a list of the currently
 known Key prefixes.  Any vendor wishing to claim a prefix may do so by
 requesting a merge request (MR) to this document via github (see 
 https://github.com/UEFI/DSD-Guide, and the file ``src/dsd-guide.adoc``).
 When submitting the MR, there are only two things needed: the change
-requested to Appendix C <<_known_device_property_prefixes>>, and a
-Developer's Certificate of Origin <<DCO>>.
+requested to Appendix C
+xref:_known_device_property_prefixes[Known Device Property Prefixes]
+and a Developer's Certificate of Origin <<DCO>>.
 
 How the vendor chooses to define anything after their prefix is entirely
 up to them.  For example, always assume that ``abcd-frammis`` and
@@ -359,14 +381,17 @@ The following examples illustrate valid Property Value data types
 for the Device Properties UUID.
 
 ....
-Package (2) {"length", 16}
-Package (2) {"device", \_SB.FOO.BAZ}
-Package (2) {"sizes", Package (3) {16, 32, 0}}
-Package (2) {"labels", Package (4) {"foo", _SB.FOO, "bar", __SB.BAR)}
-Package (2) {"default-state", "on"}
+Package (2) {"xxyy-length", 16}
+Package (2) {"xxyy-device", \_SB.FOO.BAZ}
+Package (2) {"xxyy-sizes", Package (3) {16, 32, 0}}
+Package (2) {"xxyy-labels", Package (4) {"foo", _SB.FOO, "bar", __SB.BAR)}
+Package (2) {"xxyy-default-state", "on"}
 ....
 
-#### ``_DSD`` Dependency on ``_CRS``
+Please note that the use of the prefix ``xxyy-`` is an example *only*,
+and is not meant to reflect any vendor's actual usage.
+
+#### Dependencies on ``_CRS`` When Using ``_DSD``
 
 The following example illustrates a dependency of Properties
 returned by ``_DSD`` (with the Device Properties UUID) on device
@@ -598,7 +623,7 @@ represent logical relationships. Often, hardware components relate to
 each other functionally, or have physical connections to each other,
 forming a graph. An example is shown below.
 
-.Debug Trace Graph
+[#img-debug-trace-graph]
 image::fig1.png[Debug Trace Graph]
 
 This Debug Trace Graph includes Trace Sources (Trace 1 and Trace 2)
@@ -711,8 +736,8 @@ following figure. In this example, devices ``ABC``, ``DEF`` and
 ``ABC``, ``GHI`` and ``JKL`` are interconnected in a second graph
 topology.
 
-.Four Devices Interconnected in Two Graphs
-image::fig2.png[Four Devices, Two Graphs]
+[#img-four-device-graph]
+image::fig2.png[Four Devices Connected in Two Graphs]
 
 ....
 Scope (\_SB) {
@@ -877,7 +902,7 @@ made as a github merge request to this document.
     Description:
         If present, defines the PHY channel to be used by this device
     Example:
-        Package (2) { "phy-channel", 3 }
+        Package (2) { "uefi-phy-channel", 3 }
 
 ---------------------------------------------------------------------------
     Property: uefi-phy-mode
@@ -901,7 +926,7 @@ made as a github merge request to this document.
     Description:
         Defines the PHY mode to be used for this device
     Example:
-        Package (2) { "phy-mode", "xgmii" }
+        Package (2) { "uefi-phy-mode", "xgmii" }
 
 ---------------------------------------------------------------------------
     Property: uefi-mac-address
@@ -910,7 +935,7 @@ made as a github merge request to this document.
         Provides the Ethernet address assigned to the MAC
         in a network device (also known as a MAC address)
     Example:
-        Package (2) { "mac-address",
+        Package (2) { "uefi-mac-address",
             Package (6) { 00, 11, 22, 33, 44, 55 }
         }
 
@@ -921,7 +946,7 @@ made as a github merge request to this document.
         Specifies the MTU (IEEE defined maxium transfer unit)
         supported by the device
     Example:
-        Package (2) { "max-transfer-unit", 5dc } // MTU of 1500
+        Package (2) { "uefi-max-transfer-unit", 5dc } // MTU of 1500
 
 ---------------------------------------------------------------------------
     Property: uefi-max-speed
@@ -929,7 +954,7 @@ made as a github merge request to this document.
     Description:
         Specifies the maximum speed in Mbits/second supported by the device
     Example:
-        Package (2) { "max-speed", 3e8 } // 1000 Mbps
+        Package (2) { "uefi-max-speed", 3e8 } // 1000 Mbps
 
 ....
 
