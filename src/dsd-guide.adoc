@@ -955,6 +955,20 @@ made as a github merge request to this document.
         Specifies the maximum speed in Mbits/second supported by the device
     Example:
         Package (2) { "uefi-max-speed", 3e8 } // 1000 Mbps
+---------------------------------------------------------------------------
+    Property: uefi-register-access-restriction
+    Value:    Integer (ASL assumes hexadecimal), one of the following:
+              1   =>  Must use 32-bit register access (for 64-bit registers)
+    Description:
+        Specifies the register access restrictions of a device. On platforms
+        which may have register access restrictions for some devices, this
+        property can be used to communicate to the OS the register access
+        restriction type. For example, a value of 1 is used to indicate to
+        the OS that 32-bit register access must be used for 64-bit
+        addressed registers.
+    Example:
+        // Must use 32-bit register access
+        Package (2) { "uefi-register-access-restriction", 1 }
 
 ....
 
