@@ -892,6 +892,10 @@ used instead.
 The following Device Properties are part of the ``uefi-`` Device Property
 Key namespace. These should be used instead of the entries in Appendix A.
 
+When using values for device properties listed in this appendix, only
+explicitly defined values must be used. System behavior with any other
+values is undefined.
+
 Request for additional Key names in the ``uefi-`` namespace should be
 made as a github merge request to this document.
 
