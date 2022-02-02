@@ -175,10 +175,8 @@ pair -- and every even element of the total ``Package()`` -- is another
 ``Package()`` Data Structure.  Each UUID dictates the format and content
 of the Data Structure immediately following it.
 
-Only the well-known UUIDs and their corresponding Data Structures defined
-in this guide should be used.  The behavior of any other UUIDs and Data
-Structures are *undefined*.
-
+The use of the well-known UUIDs and their corresponding Data Structures,
+as defined in this document, is strongly recommended.
 
 ## Well-Known ``_DSD`` UUIDs and Data Structure Formats
 
