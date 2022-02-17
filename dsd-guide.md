@@ -57,31 +57,34 @@ is available at <https://creativecommons.org/licenses/by/4.0/>.
   - ***If you are looking for details about a specific `_DSD` UUID***:
     these are all defined in section [Well-Known UUIDs and Data
     Structure
-    Formats](#_well_known_dsd_uuids_and_data_structure_formats). The
+    Formats](#well-known-_dsd-uuids-and-data-structure-formats). The
     UUIDs are:
     
       - Device Properties UUID: in section [Device Properties
-        UUID](#_device_properties_uuid)
+        UUID](#device-properties-uuid)
     
       - Hierarchical Data Extension UUID: in section [Hierarchical Data
-        Extension UUID](#_hierarchical_data_extension_uuid)
+        Extension UUID](#hierarchical-data-extension-uuid)
     
+      - Buffer Data Extension UUID: in section [Buffer Data 
+        Extension UUID](#buffer-data-extension-uuid)
+
       - Device Graph UUID: in section [Device Graph
-        UUID](#_device_graph_uuid)
+        UUID](#device-graph-uuid)
 
   - ***If you are looking for currently defined UEFI Device
     Properties***: see section [UEFI Defined Device Property
-    Usage](#_uefi_defined_device_property_usage).
+    Usage](#uefi-defined-device-property-usage).
 
   - ***If you are looking for currently defined Device Property
     Prefixes***: see section [Known Device Property
-    Prefixes](#_known_device_property_prefixes).
+    Prefixes](#known-device-property-prefixes).
 
   - ***If you wish to register a Device Property Prefix***: please see
     section [Known Device Property
-    Prefixes](#_known_device_property_prefixes) for currently defined
+    Prefixes](#known-device-property-prefixes) for currently defined
     prefixes, and section [Registering
-    Prefixes](#_registering_prefixes).
+    Prefixes](#registering-prefixes).
 
 ## Terms
 
@@ -631,6 +634,75 @@ multiple devices is identical.
     
     } // End SWC0
 
+## Buffer Data Extension UUID
+
+This section specifies the data format associated with UUID:
+
+**edb12dd0-363d-4085-a3d2-49522ca160c4**
+
+(Buffer Data Extension UUID) for the `_DSD` (Device Specific Data)
+ACPI device configuration object.
+
+### Data Format Definition
+
+The Buffer Data Extension UUID:
+
+**edb12dd0-363d-4085-a3d2-49522ca160c4**
+
+defines the data format for the `Package()` (Data Structure) immediately
+following it as a list of Packages of length two (2), known as Buffer
+Links. The first element of each Buffer Link (the Key) must be a
+String and the second element (the Target) must be either a String
+encoding the name of the referenced ACPI Buffer, a reference to the
+ACPI Buffer, or a Control Method returning a Buffer. That object must
+exist in the current Device Scope.
+
+The Key of each Buffer Link must be unique within the enclosing Data
+Structure. That is, it is invalid to put two Buffer Links with
+identical Keys into one enclosing Package.
+
+### Example
+
+The following example illustrates the possible use of the Buffer
+Data Extension UUID and Buffer Links. It contains a definition of a
+master Device (`SWC0`), two Buffer objects (`BUF0` and `BUF1`) and a
+Control Method (`BUFM`) returning a Buffer.
+
+    Device(SWC0) {
+        Name(_HID, "VEND0000") // sample Vendor ID - do not use
+        Name(_DSD, Package() {
+            ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+            Package () {
+                Package (2) {...}, // Property 1
+                ...
+                Package (2) {...}, // Property n
+            },
+            ToUUID("edb12dd0-363d-4085-a3d2-49522ca160c4"),
+            Package() {
+                Package (2) {"sample-buffer-0", "BUF0"},
+                Package (2) {"sample-buffer-1", "BUFM"},
+            }
+        }) // End _DSD
+        
+        Name(BUF0, Buffer() {
+                0x20, 0xFF, 0x00, 0x00, 0x00,
+                0x21, 0xFF, 0x00, 0x00, 0x01,
+                0x22, 0xFF, 0x00, 0x00, 0x02,
+        }) // End BUF0
+        
+        Name(BUF1, Buffer() {
+                0x23, 0xFF, 0x00, 0x00, 0x03,
+                0x24, 0xFF, 0x00, 0x00, 0x04,
+                0x25, 0xFF, 0x00, 0x00, 0x05,
+        }) // End BUF1
+        
+        Method(BUFM)
+        {
+                Return(BUF1);
+        }
+        
+    } // End SWC0
+        
 ## Device Graph UUID
 
 Graphs are a concept that is often observed in computing. A graph is a
