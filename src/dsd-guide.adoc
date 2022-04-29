@@ -731,6 +731,7 @@ Package () {
     DestinationPortAddress, // Integer
     DestinationDeviceName,  // Reference to another
                             // device in the name space
+    <optional vendor-defined data>
 }
 ....
 
@@ -761,14 +762,14 @@ Scope (\_SB) {
             2, // NumberOfGraphs
             Package() {
                 1, // GraphID - Graph 1
-                ToUUID(‘‘UUID_For_Graph_Arch’’),
+                ToUUID("‘‘UUID_For_Graph_Arch_1’’),
                 2, // Number of links
                 Package (3) {0,3,\_SB.DEF},
                 Package (3) {1,10,\_SB.GHI}
             },
             Package() {
                 2, // GraphID - Graph 2
-                ToUUID(‘‘UUID_For_Graph_Arch’’),
+                ToUUID(‘‘UUID_For_Graph_Arch_2’’),
                 1, // Number of links
                 Package (3) {2,380,_SB.JKL, L1} // Latency L1
             }
@@ -785,7 +786,7 @@ Scope (\_SB) {
                 1, // NumberOfGraphs
                 Package() {
                     1, // GraphID - Graph 1
-                    ToUUID(‘‘UUID_For_Graph_Arch’’),
+                    ToUUID(‘‘UUID_For_Graph_Arch_1’’),
                     1, // Number of links
                     Package (3) {5,20,\_SB.GHI}
                 }
@@ -802,13 +803,13 @@ Scope (\_SB) {
                 2, // NumberOfGraphs
                 Package () {
                     1, // GraphID - Graph 1
-                    ToUUID(‘‘UUID_For_Graph_Arch’’),
+                    ToUUID(‘‘UUID_For_Graph_Arch_1’’),
                     1, // Number of links
                     Package (3) {10,1,\_SB.ABC}
                 },
                 Package() {
                     2, // GraphID - Graph 2
-                    ToUUID(‘‘UUID_For_Graph_Arch’’),
+                    ToUUID(‘‘UUID_For_Graph_Arch_2’’),
                     1, // Number of links
                     Package (3) {30,210,\_SB.JKL, L2} // Latency L2
                 }
