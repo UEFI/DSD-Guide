@@ -29,11 +29,10 @@ of the guide.
 The source format for this document is asciidoc (.adoc) as this works
 well when being viewed in github.  Please note that all other formats
 are provided as a convenience; the asciidoc and PDF formats will generally
-look the best and get the most scrutiny.  Due to conversion errors, some
-of the other formats may not look exactly the same as the original asciidoc
-and PDF versions.  The asciidoc source is the canonical version, in the
+look the best and get the most scrutiny. 
+The asciidoc source is the canonical version, in the
 case of any differences, and all changes should be submitted against that
 source file.
 
-*Last Update: 2021-03-04*
+*Last Update: 2022-04-22*
 
