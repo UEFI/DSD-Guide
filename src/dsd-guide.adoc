@@ -797,6 +797,19 @@ determines how the Graph is to be understood by device drivers.
 A Link Package may be extended with additional vendor defined data.
 The Graph specification determines how that data is to be interpreted.
 
+....
+Package () {
+    SourcePortAddress,      // Integer
+    DestinationPortAddress, // Integer
+    DestinationDeviceName,  // Reference to another
+                            // device in the name space
+    <optional vendor-defined data>
+}
+....
+
+It is up to the device driver to interpret and use the additional data using
+the vendor provided specification.
+
 #### Example
 
 The following ASL describes four devices which are connected in
@@ -804,7 +817,8 @@ two independent Device Graphs. The graphs are illustrated in the
 following figure. In this example, devices ``ABC``, ``DEF`` and
 ``GHI`` are interconnected in the first graph topology. Devices
 ``ABC``, ``GHI`` and ``JKL`` are interconnected in a second graph
-topology.
+topology. The links in the second graph require specifying a
+latency parameter associated with the link.
 
 [#img-four-device-graph]
 image::fig2.png[Four Devices Connected in Two Graphs]
@@ -820,16 +834,16 @@ Scope (\_SB) {
             2, // NumberOfGraphs
             Package() {
                 1, // GraphID - Graph 1
-                ToUUID(‘‘UUID_For_Graph_Arch’’),
+                ToUUID("‘‘UUID_For_Graph_Arch_1’’),
                 2, // Number of links
                 Package (3) {0,3,\_SB.DEF},
                 Package (3) {1,10,\_SB.GHI}
             },
             Package() {
                 2, // GraphID - Graph 2
-                ToUUID(‘‘UUID_For_Graph_Arch’’),
+                ToUUID(‘‘UUID_For_Graph_Arch_2’’),
                 1, // Number of links
-                Package (3) {2,380,\_SB.JKL}
+                Package (3) {2,380,_SB.JKL, L1} // Latency L1
             }
         },
     })
@@ -844,7 +858,7 @@ Scope (\_SB) {
                 1, // NumberOfGraphs
                 Package() {
                     1, // GraphID - Graph 1
-                    ToUUID(‘‘UUID_For_Graph_Arch’’),
+                    ToUUID(‘‘UUID_For_Graph_Arch_1’’),
                     1, // Number of links
                     Package (3) {5,20,\_SB.GHI}
                 }
@@ -861,15 +875,15 @@ Scope (\_SB) {
                 2, // NumberOfGraphs
                 Package () {
                     1, // GraphID - Graph 1
-                    ToUUID(‘‘UUID_For_Graph_Arch’’),
+                    ToUUID(‘‘UUID_For_Graph_Arch_1’’),
                     1, // Number of links
                     Package (3) {10,1,\_SB.ABC}
                 },
                 Package() {
                     2, // GraphID - Graph 2
-                    ToUUID(‘‘UUID_For_Graph_Arch’’),
+                    ToUUID(‘‘UUID_For_Graph_Arch_2’’),
                     1, // Number of links
-                    Package (3) {30,210,\_SB.JKL},
+                    Package (3) {30,210,\_SB.JKL, L2} // Latency L2
                 }
             }
         })
