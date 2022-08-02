@@ -4,7 +4,6 @@
 
 ASCIIDOCTOR = asciidoctor
 DSD_GUIDE = dsd-guide
-PANDOC = pandoc
 PNGSRC = fig1.ditaa fig2.ditaa
 PNGS = $(PNGSRC:.ditaa=.png)
 
@@ -30,10 +29,10 @@ clean:
 
 # handy shortcuts for installing necessary packages: YMMV
 install-debs:
-	sudo apt-get install pandoc asciidoctor ruby-asciidoctor-pdf ditaa
+	sudo apt-get install asciidoctor ruby-asciidoctor-pdf ditaa
 
 install-rpms:
-	sudo dnf install pandoc rubygem-asciidoctor rubygem-asciidoctor-pdf \
+	sudo dnf install rubygem-asciidoctor rubygem-asciidoctor-pdf \
 		ditaa
 
 %.png: %.ditaa
