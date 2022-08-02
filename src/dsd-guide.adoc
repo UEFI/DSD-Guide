@@ -5,8 +5,8 @@
 //
 # _DSD (Device Specific Data) Implementation Guide
 :author: UEFI ACPI Specification Working Group
-:revnumber: 2.0
-:revdate: 23 April 2021
+:revnumber: 2.1
+:revdate: 2 August 2022
 :doctype: book
 :sectnums:
 :toc: macro
@@ -34,7 +34,7 @@ specified in this document.
  
 ### Copyright and License Information
 
-The _DSD Implementation Guide is (C) 2021, Unified Extensible Firmware
+The _DSD Implementation Guide is (C) 2021-2022, Unified Extensible Firmware
 Interface (UEFI) Forum, Inc.  More specifically, content is under the
 purview of the ACPI Specification Working Group (ASWG) <aswg@uefi.org>.
 
@@ -44,6 +44,10 @@ text is available at https://creativecommons.org/licenses/by/4.0/.
 
 ### Change Log
 
+* Version 2.1
+** Clarify and illustrate use of vendor-defined data in ACPI graph link description.
+** Add Buffer Data Extension UUID.
+** Remove invalid restrictive text of the source of UUIDs.
 * Version 2.0
 ** Initial conversion to asciidoc from original v1.2.
 ** General text rewrites and reformatting.

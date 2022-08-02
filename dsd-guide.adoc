@@ -5,8 +5,8 @@
 //
 # _DSD (Device Specific Data) Implementation Guide
 :author: UEFI ACPI Specification Working Group
-:revnumber: 2.0
-:revdate: 23 April 2021
+:revnumber: 2.1
+:revdate: 2 August 2022
 :doctype: book
 :sectnums:
 :toc: macro
@@ -34,7 +34,7 @@ specified in this document.
  
 ### Copyright and License Information
 
-The _DSD Implementation Guide is (C) 2021, Unified Extensible Firmware
+The _DSD Implementation Guide is (C) 2021-2022, Unified Extensible Firmware
 Interface (UEFI) Forum, Inc.  More specifically, content is under the
 purview of the ACPI Specification Working Group (ASWG) <aswg@uefi.org>.
 
@@ -44,6 +44,10 @@ text is available at https://creativecommons.org/licenses/by/4.0/.
 
 ### Change Log
 
+* Version 2.1
+** Clarify and illustrate use of vendor-defined data in ACPI graph link description.
+** Add Buffer Data Extension UUID.
+** Remove invalid restrictive text of the source of UUIDs.
 * Version 2.0
 ** Initial conversion to asciidoc from original v1.2.
 ** General text rewrites and reformatting.
@@ -60,20 +64,22 @@ Data)".
 or reviewing section 6.2.5, "_DSD (Device Specific Data)" in <<ACPI>>.
 * *_If you are looking for details about a specific ``_DSD`` UUID_*: these
 are all defined in section 
-<<_well_known_dsd_uuids_and_data_structure_formats>>.  The UUIDs are:
-** Device Properties UUID: in section <<_device_properties_uuid>>
+<<well-known-_dsd-uuids-and-data-structure-formats>>.  The UUIDs are:
+** Device Properties UUID: in section <<device-properties-uuid>>
 ** Hierarchical Data Extension UUID: in section
-<<_hierarchical_data_extension_uuid>>
-** Device Graph UUID: in section <<_device_graph_uuid>>
+<<hierarchical-data-extension-uuid>>
+** Buffer Data Extension UUID: in section
+<<buffer-data-extension-uuid>>
+** Device Graph UUID: in section <<device-graph-uuid>>
 * *_If you are looking for currently defined UEFI Device Properties_*:
 see section
-xref:_uefi_defined_device_property_usage[UEFI Defined Device Property Usage].
+xref:uefi-defined-device-property-usage[UEFI Defined Device Property Usage].
 * *_If you are looking for currently defined Device Property Prefixes_*:
 see section
-xref:_known_device_property_prefixes[Known Device Property Prefixes].
+xref:known-device-property-prefixes[Known Device Property Prefixes].
 * *_If you wish to register a Device Property Prefix_*: please see section
-xref:_known_device_property_prefixes[Known Device Property Prefixes]
-for currently defined prefixes, and section <<_registering_prefixes>>.
+xref:known-device-property-prefixes[Known Device Property Prefixes]
+for currently defined prefixes, and section <<registering-prefixes>>.
 
 
 ### Terms
@@ -175,10 +181,8 @@ pair -- and every even element of the total ``Package()`` -- is another
 ``Package()`` Data Structure.  Each UUID dictates the format and content
 of the Data Structure immediately following it.
 
-Only the well-known UUIDs and their corresponding Data Structures defined
-in this guide should be used.  The behavior of any other UUIDs and Data
-Structures are *undefined*.
-
+The use of the well-known UUIDs and their corresponding Data Structures,
+as defined in this document, is strongly recommended.
 
 ## Well-Known ``_DSD`` UUIDs and Data Structure Formats
 
@@ -615,6 +619,76 @@ Device(SWC0) {
 } // End SWC0
 ....
 
+### Buffer Data Extension UUID
+This section specifies the data format associated with UUID:
+
+*edb12dd0-363d-4085-a3d2-49522ca160c4*
+
+(Buffer Data Extension UUID) for the ``_DSD`` (Device Specific Data)
+ACPI device configuration object.
+
+#### Data Format Definition
+
+The Buffer Data Extension UUID:
+
+*edb12dd0-363d-4085-a3d2-49522ca160c4*
+
+defines the data format for the ``Package()`` (Data Structure) immediately
+following it as a list of Packages of length two (2), known as Buffer
+Links. The first element of each Buffer Link (the Key) must be a
+String and the second element (the Target) must be either a String
+encoding the name of the referenced ACPI Buffer, a reference to the
+ACPI Buffer, or a Control Method returning a Buffer. That object must
+exist in the current Device Scope.
+
+The Key of each Buffer Link must be unique within the enclosing Data
+Structure. That is, it is invalid to put two Buffer Links with
+identical Keys into one enclosing Package.
+
+#### Example
+
+The following example illustrates the possible use of the Buffer
+Data Extension UUID and Buffer Links. It contains a definition of a
+master Device (``SWC0``), two Buffer objects (``BUF0`` and ``BUF1``) and a
+Control Method (``BUFM``) returning a Buffer.
+
+....
+    Device(SWC0) {
+        Name(_HID, "VEND0000") // sample Vendor ID - do not use
+        Name(_DSD, Package() {
+            ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+            Package () {
+                Package (2) {...}, // Property 1
+                ...
+                Package (2) {...}, // Property n
+            },
+            ToUUID("edb12dd0-363d-4085-a3d2-49522ca160c4"),
+            Package() {
+                Package (2) {"sample-buffer-0", "BUF0"},
+                Package (2) {"sample-buffer-1", "BUFM"},
+            }
+        }) // End _DSD
+
+        Name(BUF0, Buffer() {
+                0x20, 0xFF, 0x00, 0x00, 0x00,
+                0x21, 0xFF, 0x00, 0x00, 0x01,
+                0x22, 0xFF, 0x00, 0x00, 0x02,
+        }) // End BUF0
+
+        Name(BUF1, Buffer() {
+                0x23, 0xFF, 0x00, 0x00, 0x03,
+                0x24, 0xFF, 0x00, 0x00, 0x04,
+                0x25, 0xFF, 0x00, 0x00, 0x05,
+        }) // End BUF1
+
+        Method(BUFM)
+        {
+                Return(BUF1);
+        }
+
+    } // End SWC0
+....
+
 ### Device Graph UUID
 
 Graphs are a concept that is often observed in computing. A graph is
@@ -727,6 +801,19 @@ determines how the Graph is to be understood by device drivers.
 A Link Package may be extended with additional vendor defined data.
 The Graph specification determines how that data is to be interpreted.
 
+....
+Package () {
+    SourcePortAddress,      // Integer
+    DestinationPortAddress, // Integer
+    DestinationDeviceName,  // Reference to another
+                            // device in the name space
+    <optional vendor-defined data>
+}
+....
+
+It is up to the device driver to interpret and use the additional data using
+the vendor provided specification.
+
 #### Example
 
 The following ASL describes four devices which are connected in
@@ -734,7 +821,8 @@ two independent Device Graphs. The graphs are illustrated in the
 following figure. In this example, devices ``ABC``, ``DEF`` and
 ``GHI`` are interconnected in the first graph topology. Devices
 ``ABC``, ``GHI`` and ``JKL`` are interconnected in a second graph
-topology.
+topology. The links in the second graph require specifying a
+latency parameter associated with the link.
 
 [#img-four-device-graph]
 image::fig2.png[Four Devices Connected in Two Graphs]
@@ -750,16 +838,16 @@ Scope (\_SB) {
             2, // NumberOfGraphs
             Package() {
                 1, // GraphID - Graph 1
-                ToUUID(‘‘UUID_For_Graph_Arch’’),
+                ToUUID("‘‘UUID_For_Graph_Arch_1’’),
                 2, // Number of links
                 Package (3) {0,3,\_SB.DEF},
                 Package (3) {1,10,\_SB.GHI}
             },
             Package() {
                 2, // GraphID - Graph 2
-                ToUUID(‘‘UUID_For_Graph_Arch’’),
+                ToUUID(‘‘UUID_For_Graph_Arch_2’’),
                 1, // Number of links
-                Package (3) {2,380,\_SB.JKL}
+                Package (3) {2,380,_SB.JKL, L1} // Latency L1
             }
         },
     })
@@ -774,7 +862,7 @@ Scope (\_SB) {
                 1, // NumberOfGraphs
                 Package() {
                     1, // GraphID - Graph 1
-                    ToUUID(‘‘UUID_For_Graph_Arch’’),
+                    ToUUID(‘‘UUID_For_Graph_Arch_1’’),
                     1, // Number of links
                     Package (3) {5,20,\_SB.GHI}
                 }
@@ -791,15 +879,15 @@ Scope (\_SB) {
                 2, // NumberOfGraphs
                 Package () {
                     1, // GraphID - Graph 1
-                    ToUUID(‘‘UUID_For_Graph_Arch’’),
+                    ToUUID(‘‘UUID_For_Graph_Arch_1’’),
                     1, // Number of links
                     Package (3) {10,1,\_SB.ABC}
                 },
                 Package() {
                     2, // GraphID - Graph 2
-                    ToUUID(‘‘UUID_For_Graph_Arch’’),
+                    ToUUID(‘‘UUID_For_Graph_Arch_2’’),
                     1, // Number of links
-                    Package (3) {30,210,\_SB.JKL},
+                    Package (3) {30,210,\_SB.JKL, L2} // Latency L2
                 }
             }
         })
