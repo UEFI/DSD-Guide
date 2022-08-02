@@ -3,7 +3,7 @@
 // dsd-guide.adoc: _DSD implementation guide
 //
 //
-# _DSD (Device Specific Data) Implementation Guide
+= _DSD (Device Specific Data) Implementation Guide
 :author: UEFI ACPI Specification Working Group
 :revnumber: 2.1
 :revdate: 2 August 2022
@@ -15,7 +15,7 @@
 // table of contents
 toc::[]
 
-## Introduction
+== Introduction
 
 This is the ACPI _DSD Implementation Guide.  This guide and its associated
 documents provide recommendations on the use of the _DSD (Device Specific
@@ -32,7 +32,7 @@ immediately following it. The well-known UUIDs to use in the _DSD
 output and the Data Structure formats associated with them are also
 specified in this document.
  
-### Copyright and License Information
+=== Copyright and License Information
 
 The _DSD Implementation Guide is (C) 2021-2022, Unified Extensible Firmware
 Interface (UEFI) Forum, Inc.  More specifically, content is under the
@@ -42,7 +42,7 @@ The _DSD Implementation Guide is licensed under the Creative Commons
 Attribution 4.0 International License (CC-BY 4.0).  The full license
 text is available at https://creativecommons.org/licenses/by/4.0/.
 
-### Change Log
+=== Change Log
 
 * Version 2.1
 ** Clarify and illustrate use of vendor-defined data in ACPI graph link description.
@@ -56,7 +56,7 @@ text is available at https://creativecommons.org/licenses/by/4.0/.
 ** Add a bibliography and references section.
 ** Add in process and naming recommendations.
 
-### Quick Start Guide
+=== Quick Start Guide
 * *_If you are new to ACPI_*: please start with the ACPI specification
 (see <<ACPI>>) and in particular section 6.2.5, "_DSD (Device Specific
 Data)".
@@ -64,7 +64,7 @@ Data)".
 or reviewing section 6.2.5, "_DSD (Device Specific Data)" in <<ACPI>>.
 * *_If you are looking for details about a specific ``_DSD`` UUID_*: these
 are all defined in section 
-<<well-known-_dsd-uuids-and-data-structure-formats>>.  The UUIDs are:
+<<well-known-uuids>>.  The UUIDs are:
 ** Device Properties UUID: in section <<device-properties-uuid>>
 ** Hierarchical Data Extension UUID: in section
 <<hierarchical-data-extension-uuid>>
@@ -73,16 +73,16 @@ are all defined in section
 ** Device Graph UUID: in section <<device-graph-uuid>>
 * *_If you are looking for currently defined UEFI Device Properties_*:
 see section
-xref:uefi-defined-device-property-usage[UEFI Defined Device Property Usage].
+<<uefi-defined-device-property-usage>>.
 * *_If you are looking for currently defined Device Property Prefixes_*:
 see section
-xref:known-device-property-prefixes[Known Device Property Prefixes].
+<<known-device-property-prefixes>>.
 * *_If you wish to register a Device Property Prefix_*: please see section
-xref:known-device-property-prefixes[Known Device Property Prefixes]
+<<known-device-property-prefixes>>
 for currently defined prefixes, and section <<registering-prefixes>>.
 
 
-### Terms
+=== Terms
 
 The key words *MUST*, *MUST NOT*, *REQUIRED*, *SHALL*, *SHALL
 NOT*, *SHOULD*, *SHOULD NOT*, *RECOMMENDED*,  *MAY*, and
@@ -115,19 +115,22 @@ Computer Text:: ``monospace text`` is used to represent computer
 Stress:: *bold text* is used to add emphasis to terms.
 Terms:: _italic text_ is used to highlight important terminology.
 
-### References
-
-[bibliography]
-- [[[ACPI]]] Advanced Configuration and Power Interface (ACPI) Specification,
+=== References
+[#ACPI]
+- [ACPI] Advanced Configuration and Power Interface (ACPI) Specification,
   Version 6.3, January 2019.  Copyright (c) 2018, Unified Extensible
   Firmware Interface (UEFI) Forum, Inc. https://uefi.org/specifications
-- [[DCO]] Developer's Certificate of Origin. https://developercertificate.org/
-- [[[RFC2119]]] https://www.ietf.org/rfc/rfc2119.txt
+
+[#DCO]
+- Developer's Certificate of Origin. https://developercertificate.org/
+
+[#RFC2119]
+- [RFC2119] https://www.ietf.org/rfc/rfc2119.txt
 
 
-## General Recommendations
+== General Recommendations
 
-### Using ``_DSD`` versus ``_DSM``
+=== Using ``_DSD`` versus ``_DSM``
 
 Although in principle the ``_DSM`` (Device Specific Method) may be used to
 implement the functionality provided by ``_DSD``, it is not recommended to
@@ -141,7 +144,7 @@ registers in addition to returning the data. In addition to that, ``_DSD``
 must return the same data every time it is evaluated, so if that cannot
 be guaranteed, ``_DSM`` has to be used instead.
 
-### General ``_DSD`` Definition Template
+=== General ``_DSD`` Definition Template
 
 Wherever possible, it is recommended to implement ``_DSD`` as a ``Name()``
 as opposed to a ``Method()`` in order to avoid possible programmatic
@@ -184,9 +187,11 @@ of the Data Structure immediately following it.
 The use of the well-known UUIDs and their corresponding Data Structures,
 as defined in this document, is strongly recommended.
 
-## Well-Known ``_DSD`` UUIDs and Data Structure Formats
+[#well-known-uuids]
+== Well-Known ``_DSD`` UUIDs and Data Structure Formats
 
-### Device Properties UUID
+[#device-properties-uuid]
+=== Device Properties UUID
 
 This section specifies the data format associated with UUID:
 
@@ -195,7 +200,7 @@ This section specifies the data format associated with UUID:
 (Device Properties UUID) for the ``_DSD`` (Device Specific Data) ACPI
 device configuration object.
 
-#### Data Format Definition
+==== Data Format Definition
 
 The device properties UUID:
 
@@ -246,7 +251,7 @@ is independent of the firmware interface to be used on any given platform.
 Multiple Properties with the same Key in a single Data Structure associated
 with the Device Properties UUID are not permitted.
 
-#### Device Properties UUID Rules
+==== Device Properties UUID Rules
 
 Properties described in a Device Properties UUID ``_DSD`` are intended
 to be used in addition to, and not instead of, the existing mechanisms
@@ -274,7 +279,7 @@ the IRQ resources provided via ``_CRS`` rather than providing an absolute
 IRQ number. This avoids duplication between the Properties and ``_CRS``,
 making it easier to change the resources of a Device in one place.
 
-#### Device Property Naming
+==== Device Property Naming
 While the Key for a Property may be any String, there is a very high
 probability of name collision.  For example, two vendors could use the
 String ``"serial-number"`` as a Key.  The problem is that each vendor may
@@ -289,14 +294,14 @@ their registered PNP or ACPI vendor ID in order to avoid name collisions.
 What the vendor decides to use after the prefix is completely up to their
 own discretion.  For example, Vendor ABCD would use ``abcd-serial-number``
 instead of ``serial-number``, especially if the word or term is known to
-be in common use.  Please see <<_registering_prefixes>> for instructions
+be in common use.  Please see <<registering-prefixes>> for instructions
 on obtaining a vendor prefix.
 
-Due to historical usage, Appendix A <<_deprecated_device_properties>>
+Due to historical usage, Appendix A <<deprecated-device-properties>>
 contains a list of Keys that do not have any prefix at all.  These should
 not be used in the future; they should be considered deprecated.  In
 Appendix B
-xref:_uefi_defined_device_property_usage:[UEFI Defined Device Property Usage],
+<<uefi-defined-device-property-usage>>,
 prefixed names for these same Keys are defined and should be used henceforth.
 
 The reason these older Key definitions have no prefix is that there
@@ -327,7 +332,7 @@ is ultimately in everyone's best interest to be clear on who owns what
 Device Properties, and who is responsible for defining them.
 ====
 
-#### Adding UEFI Device Properties
+==== Adding UEFI Device Properties
 In order to create a Device Property in the ``uefi`` namespace, it must
 be provided as a merge request (MR) to this document via github (see
 https://github.com/UEFI/DSD-Guide, and the file ``src/dsd-guide.adoc``).
@@ -336,7 +341,7 @@ this Key/Value pair as something that needs to be defined globally.
 Further, please provide a description of how the Key/Value pair is to
 be used, with a definition of the allowed values, and a brief example.
 Something similar to the definitions in Appendix B
-xref:_uefi_defined_device_property_usage:[UEFI Defined Device Property Usage]
+<<uefi-defined-device-property-usage>>
 will speed up the process.
 
 Each MR will be reviewed by the UEFI Forum (specifically, the ACPI
@@ -350,17 +355,17 @@ next release.
 Please note that each MR must also provide a Developer's Certificate of
 Origin <<DCO>> before it can be merged into this document.
 
-
-#### Registering Prefixes
+[#registering-prefixes]
+==== Registering Prefixes
 In Appendix C
-xref:_known_device_property_prefixes[Known Device Property Prefixes]
+<<known-device-property-prefixes>>
 is a list of the currently
 known Key prefixes.  Any vendor wishing to claim a prefix may do so by
 requesting a merge request (MR) to this document via github (see 
 https://github.com/UEFI/DSD-Guide, and the file ``src/dsd-guide.adoc``).
 When submitting the MR, there are only two things needed: the change
 requested to Appendix C
-xref:_known_device_property_prefixes[Known Device Property Prefixes]
+<<known-device-property-prefixes>>
 and a Developer's Certificate of Origin <<DCO>>.
 
 How the vendor chooses to define anything after their prefix is entirely
@@ -377,9 +382,9 @@ Once accepted, the MR will be merged into this document as part of the
 next release.
 
 
-#### Examples
+==== Examples
 
-##### Example Valid Property Representations
+===== Example Valid Property Representations
 
 The following examples illustrate valid Property Value data types
 for the Device Properties UUID.
@@ -395,7 +400,7 @@ Package (2) {"xxyy-default-state", "on"}
 Please note that the use of the prefix ``xxyy-`` is an example *only*,
 and is not meant to reflect any vendor's actual usage.
 
-#### Dependencies on ``_CRS`` When Using ``_DSD``
+==== Dependencies on ``_CRS`` When Using ``_DSD``
 
 The following example illustrates a dependency of Properties
 returned by ``_DSD`` (with the Device Properties UUID) on device
@@ -472,8 +477,8 @@ Scope (\_SB.PCI0.LPC)
 }
 ....
 
-
-### Hierarchical Data Extension UUID
+[#hierarchical-data-extension-uuid]
+=== Hierarchical Data Extension UUID
 
 This section specifies the data format associated with UUID:
 
@@ -482,7 +487,7 @@ This section specifies the data format associated with UUID:
 (Hierarchical Data Extension UUID) for the ``_DSD`` (Device Specific Data) ACPI
 device configuration object.
 
-#### Data Format Definition
+==== Data Format Definition
 
 The Hierarchical Data Extension UUID:
 
@@ -527,7 +532,7 @@ all Targets within and beneath the Package must also be References,
 not Strings. Implementers are encouraged to use exclusively Strings
 or References throughout the hierarchy.
 
-#### Example
+==== Example
 
 The following example illustrates the possible use of the Hierarchical
 Data Extension UUID and Sub-node Links. It contains a definition of a
@@ -619,7 +624,8 @@ Device(SWC0) {
 } // End SWC0
 ....
 
-### Buffer Data Extension UUID
+[#buffer-data-extension-uuid]
+=== Buffer Data Extension UUID
 This section specifies the data format associated with UUID:
 
 *edb12dd0-363d-4085-a3d2-49522ca160c4*
@@ -627,7 +633,7 @@ This section specifies the data format associated with UUID:
 (Buffer Data Extension UUID) for the ``_DSD`` (Device Specific Data)
 ACPI device configuration object.
 
-#### Data Format Definition
+==== Data Format Definition
 
 The Buffer Data Extension UUID:
 
@@ -645,7 +651,7 @@ The Key of each Buffer Link must be unique within the enclosing Data
 Structure. That is, it is invalid to put two Buffer Links with
 identical Keys into one enclosing Package.
 
-#### Example
+==== Example
 
 The following example illustrates the possible use of the Buffer
 Data Extension UUID and Buffer Links. It contains a definition of a
@@ -689,7 +695,8 @@ Control Method (``BUFM``) returning a Buffer.
     } // End SWC0
 ....
 
-### Device Graph UUID
+[#device-graph-uuid]
+=== Device Graph UUID
 
 Graphs are a concept that is often observed in computing. A graph is
 a set of __nodes__ that are connected together through __links__ that
@@ -714,7 +721,7 @@ This section specifies the data format associated with UUID:
 (Device Graph UUID) for the ``_DSD`` (Device Specific Data) ACPI
 device configuration object.
 
-#### Data Format Definition
+==== Data Format Definition
 
 The Device Graph UUID:
 
@@ -814,7 +821,7 @@ Package () {
 It is up to the device driver to interpret and use the additional data using
 the vendor provided specification.
 
-#### Example
+==== Example
 
 The following ASL describes four devices which are connected in
 two independent Device Graphs. The graphs are illustrated in the
@@ -896,9 +903,9 @@ Scope (\_SB) {
 }
 ....
 
-#### Known Device Graph UUIDs
+==== Known Device Graph UUIDs
 
-##### Arm CoreSight ACPI Specification
+===== Arm CoreSight ACPI Specification
 
 *3ECBC8B6-1D0E-4FB3-8107-E627F805C6CD*
 
@@ -906,7 +913,8 @@ https://developer.arm.com/documentation/den0067/latest
 
 
 [appendix]
-## Deprecated Device Properties
+[#deprecated-device-properties]
+== Deprecated Device Properties
 The following Device Properties have become _de facto_ standard usage.
 However, in the interest of avoiding name conflicts in the future, these
 should be considered deprecated; the entries in Appendix B should be
@@ -976,7 +984,8 @@ used instead.
 ....
 
 [appendix]
-## UEFI Defined Device Property Usage
+[#uefi-defined-device-property-usage]
+== UEFI Defined Device Property Usage
 The following Device Properties are part of the ``uefi-`` Device Property
 Key namespace. These should be used instead of the entries in Appendix A.
 
@@ -1063,7 +1072,8 @@ made as a github merge request to this document.
 ....
 
 [appendix]
-## Known Device Property Prefixes
+[#known-device-property-prefixes]
+== Known Device Property Prefixes
 The following table contains the prefixes of Device Property Keys
 that have been made known to the UEFI Forum.  These prefixes are to
 be used in naming Device Property Keys in order to avoid name collisions.
