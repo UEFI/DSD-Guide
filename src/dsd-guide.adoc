@@ -1093,5 +1093,9 @@ for any questions that may arise.
 | ``uefi``
 | UEFI Forum
 | aswg@uefi.org
+
+| ``arm``
+| Arm
+| errata@arm.com
 |===
 
