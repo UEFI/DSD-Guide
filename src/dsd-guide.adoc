@@ -121,8 +121,14 @@ Terms:: _italic text_ is used to highlight important terminology.
   Version 6.3, January 2019.  Copyright (c) 2018, Unified Extensible
   Firmware Interface (UEFI) Forum, Inc. https://uefi.org/specifications
 
+[#ACPI_ID]
+- [ACPI_ID] ACPI ID Registry https://uefi.org/ACPI_ID_List
+
 [#DCO]
 - Developer's Certificate of Origin. https://developercertificate.org/
+
+[#PNP_ID]
+- [PNP_ID] PnP ID Registry https://uefi.org/PNP_ID_List
 
 [#RFC2119]
 - [RFC2119] https://www.ietf.org/rfc/rfc2119.txt
@@ -1080,6 +1086,11 @@ be used in naming Device Property Keys in order to avoid name collisions.
 For example, if we have the prefix ``abc`` and ``def``, we can be assured
 that ``abc-foo`` is most likely not the same thing as ``def-foo`` unless
 the owners of those prefixes say otherwise.
+
+In addition to the list below, de facto prefixes exist as a result of 
+vendor ID assignments in the PNP <<PNP_ID>> and ACPI <<ACPI_ID>> 
+Registries. I.e. the ``intc-`` prefix is owned and managed by Intel 
+Corporation, and ``mipi-`` is owned and managed by the MIPI Alliance.
 
 The add a prefix to this list and reserve it for your use, please submit
 a merge request to add a row to the table below.  It must include the
