@@ -219,9 +219,8 @@ second element (the Value) must be:
 
 * an Integer,
 * a String,
-* a Reference, or
-* a Package consisting entirely of Integer, String, or Reference objects
-  (and specifically not containing a nested Package).
+* a Reference (but not referencing a Package which in turn contains nested Package references), or
+* a Package (but not containing a reference to another Package).
 
 The list of valid Keys, and the format and interpretation of the
 corresponding Values, depends on the PNP or ACPI device ID (e.g., ``_HID``)
