@@ -1099,8 +1099,7 @@ for any questions that may arise.
 
 .Known Device Property Prefixes
 |===
-| Prefix | Owner | Email
-
+| Prefix | Owner | Contact
 | ``uefi``
 | UEFI Forum
 | aswg@uefi.org
@@ -1108,5 +1107,9 @@ for any questions that may arise.
 | ``arm``
 | Arm
 | errata@arm.com
+
+| ``mipi``
+| MIPI
+| https://www.mipi.org/about-us/contact-us
 |===
 
