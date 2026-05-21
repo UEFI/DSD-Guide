@@ -892,7 +892,7 @@ Scope (\_SB) {
                 2, // NumberOfGraphs
                 Package () {
                     1, // GraphID - Graph 1
-                    ToUUID(‘‘UUID_For_Graph_Arch_1’’),
+                    ToUUID("‘‘"UUID_For_Graph_Arch_1’’),
                     1, // Number of links
                     Package (3) {10,1,\_SB.ABC}
                 },
@@ -913,9 +913,21 @@ Scope (\_SB) {
 
 ===== Arm CoreSight ACPI Specification
 
-*3ECBC8B6-1D0E-4FB3-8107-E627F805C6CD*
+*3ecbc8b6-1d0e-4fb3-8107-e627f805c6cd*
 
 https://developer.arm.com/documentation/den0067/latest
+
+===== Arm SCMI Device Properties UUID 
+
+*84a2d1c6-86b6-4199-8dac-9c17449d5e03*
+
+https://developer.arm.com/documentation/111115/latest
+
+===== Arm FFA Device Properties UUID 
+
+*c08c3233-b316-4723-a9d7-e21b7ac0fb6a*
+
+https://developer.arm.com/documentation/den0077/latest
 
 
 [appendix]
