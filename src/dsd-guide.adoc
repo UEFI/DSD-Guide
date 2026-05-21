@@ -892,7 +892,7 @@ Scope (\_SB) {
                 2, // NumberOfGraphs
                 Package () {
                     1, // GraphID - Graph 1
-                    ToUUID("‘‘"UUID_For_Graph_Arch_1’’),
+                    ToUUID(‘‘UUID_For_Graph_Arch_1’’),
                     1, // Number of links
                     Package (3) {10,1,\_SB.ABC}
                 },
