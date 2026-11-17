@@ -1109,7 +1109,7 @@ for any questions that may arise.
 | errata@arm.com
 
 | ``mipi``
-| MIPI
+| MIPI Alliance
 | https://www.mipi.org/about-us/contact-us
 |===
 
